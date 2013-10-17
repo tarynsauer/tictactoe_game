@@ -37,4 +37,19 @@ describe("Game", function() {
       expect(Game.prototype.checkGameStatus).toHaveBeenCalled();
     });
   });
+
+  describe("#whoGoesFirst", function() {
+    it("calls #whoGoesFirst", function() {
+      spyOn(Game.prototype, "whoGoesFirst");
+      game = new Game(player, computer, board);
+      expect(Game.prototype.whoGoesFirst).toHaveBeenCalled();
+    });
+
+    it("#whoGoesFirst returns player or computer", function() {
+      game = new Game(player, computer, board);
+      var whoGoesFirstString = game.playersTurn
+      expect(whoGoesFirstString).toEqual(jasmine.any(String));
+    });
+  });
+
 })
