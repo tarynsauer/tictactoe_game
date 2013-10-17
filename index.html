@@ -15,28 +15,43 @@
         <link rel="stylesheet" href="css/normalize.css">
         <link rel="stylesheet" href="css/main.css">
         <script src="js/vendor/modernizr-2.6.2.min.js"></script>
+        <script src="js/vendor/jquery-1.10.2.min.js"></script>
+        <script src="src/main.js"></script>
     </head>
     <body>
         <!--[if lt IE 7]>
             <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
         <![endif]-->
-
-        <!-- Add your site or application content here -->
-        <p>Hello world! This is HTML5 Boilerplate.</p>
-
-        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+      <div class="container">
+        <button id="newGame" class="btn" id="newGame">New Game</button>
+        <h1>Tic-Tac-Toe</h1>
+        <p id="gameStatusMessage"></p>
+      </div>
+      <div class="player1">
+        <h2>Settings</h2>
+        <h3>Player - X</h3>
+      <div class="player2">
+        <h3>Computer - O</h3>
+      </div>
+      <table>
+        <tr>
+            <td id="1A" class="board"></td>
+            <td id="2A" class="board"></td>
+            <td id="3A" class="board"></td>
+        </tr>
+        <tr>
+            <td id="1B" class="board"></td>
+            <td id="2B" class="board"></td>
+            <td id="3B" class="board"></td>
+        </tr>
+        <tr>
+            <td id="1C" class="board"></td>
+            <td id="2C" class="board"></td>
+            <td id="3C" class="board"></td>
+        </tr>
+      </table>
         <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.10.2.min.js"><\/script>')</script>
         <script src="js/plugins.js"></script>
-        <script src="js/main.js"></script>
 
-        <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
-        <script>
-            (function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=
-            function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;
-            e=o.createElement(i);r=o.getElementsByTagName(i)[0];
-            e.src='//www.google-analytics.com/analytics.js';
-            r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));
-            ga('create','UA-XXXXX-X');ga('send','pageview');
-        </script>
     </body>
 </html>
