@@ -51,7 +51,24 @@ describe("Board", function() {
       board.addMarker('X', '2C');
       board.addMarker('X', '1C');
       var trioResult = board.checkTrioForWin(player.marker, '1C', '2C', '3C');
-      expect(trioResult).toEqual(true);
+      expect(trioResult).toEqual('3C');
+    });
+  });
+
+  describe("#findPotentialWin", function() {
+    it("returns false if there is no winning move", function() {
+      board.addMarker('X', '2C');
+      board.addMarker('O', '3C');
+      board.addMarker('O', '1C');
+      var result = board.findPotentialWin(computer.marker);
+      expect(result).toEqual(false);
+    });
+
+    it("finds a winning opportunity", function() {
+      board.addMarker('O', '2C');
+      board.addMarker('O', '1C');
+      var result = board.findPotentialWin(computer.marker);
+      expect(result).toEqual('3C');
     });
   });
 })

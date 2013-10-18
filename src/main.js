@@ -24,7 +24,8 @@ $( document ).ready(function() {
 
 // Board -------------------------------------
   Board = function () {
-    this.filledSpaces = { "1A": null, "2A": null, "3A": null, "1B": null, "2B": null, "3B": null, "1C": null, "2C": null, "3C": null };
+    this.filledSpaces = { "1A": null, "2A": null, "3A": null,
+    "1B": null, "2B": null, "3B": null, "1C": null, "2C": null, "3C": null };
     this.cells = $( ".board" );
   }
 
@@ -33,26 +34,73 @@ $( document ).ready(function() {
     this.filledSpaces[cellId] = marker;
   };
 
+  Board.prototype.findEmptyCell = function(cellSet) {
+    var result;
+    _.each(trio, function (cellValue, cellID) {
+      if (cellValue === null) {
+        result = cellID;
+      }
+    });
+    return result;
+  };
+
   Board.prototype.checkTrioForWin = function(marker, cell1, cell2, cell3){
     var trio = _.pick(this.filledSpaces, cell1, cell2, cell3);
     var trioValues = _.values(trio);
     var trioValuesSorted = trioValues.sort();
     var equality = _.isEqual(trioValuesSorted, [marker, marker, null])
-    return equality;
+    if (equality === false) {
+      return false;
+    } else {
+      // this needs to be refactored to findEmptyCell()
+      var result;
+      _.each(trio, function (cellValue, cellID) {
+        if (cellValue === null) {
+          result = cellID;
+        }
+      });
+      return result;
+    }
   };
 
   Board.prototype.findPotentialWin = function(marker){
-    // check if you can win on next move
-    var markedCells = this.filledSpaces.getCellsByMarker(marker);
+    // check if there is a potential winning move
+    var rowOne = this.checkTrioForWin(marker, '1A', '1B', '1C');
+    var rowTwo = this.checkTrioForWin(marker, '2A', '2B', '2C');
+    var rowThree = this.checkTrioForWin(marker, '3A', '3B', '3C');
 
-  };
+    var colOne = this.checkTrioForWin(marker, '1A', '2A', '3A');
+    var colTwo = this.checkTrioForWin(marker, '1B', '2B', '3B');
+    var colThree = this.checkTrioForWin(marker, '1C', '2C', '3C');
 
-  Board.prototype.blockOpponentWin = function(marker){
-    // check if opponent can win on next move
+    var diagonalOne = this.checkTrioForWin(marker, '1A', '2B', '3C');
+    var diagonalTwo = this.checkTrioForWin(marker, '3A', '2B', '1C');
+
+    if (rowOne != false) {
+      return rowOne;
+    } else if (rowTwo != false) {
+      return rowTwo;
+    } else if (rowThree != false) {
+      return rowThree;
+    } else if (colOne != false) {
+      return colOne;
+    } else if (colTwo != false) {
+      return colTwo;
+    } else if (colThree != false) {
+      return colThree;
+    } else if (diagonalOne != false) {
+      return diagonalOne;
+    } else if (diagonalTwo != false) {
+      return diagonalTwo;
+    } else {
+      return false;
+    }
+
   };
 
   Board.prototype.checkForCorner = function(marker){
     // take a corner if it's free
+
   };
 
   Board.prototype.checkSides = function(marker){
