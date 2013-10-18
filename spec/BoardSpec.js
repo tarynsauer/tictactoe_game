@@ -25,22 +25,33 @@ describe("Board", function() {
 
   describe("#addMarker", function() {
     it("adds a marker to the board", function() {
-      board.addMarker('X', '2C')
+      board.addMarker('X', '2C');
       var cellValue = $('#2C').prop('outerHTML');
       expect(cellValue).toEqual('<td id="2C" class="board">X</td>');
     });
 
-    it("adds the marker ID to the filledSpaces array", function() {
-      board.addMarker('X', '2C')
-      var filledSpacesArray = board.filledSpaces
-      expect(filledSpacesArray).toEqual(['2C']);
+    it("adds the marker ID to the filledSpaces object", function() {
+      board.addMarker('X', '2C');
+      var filledSpacesArray = board.filledSpaces;
+      expect(filledSpacesArray).toEqual({ "1A": null, "2A": null, "3A": null, "1B": null, "2B": null, "3B": null, "1C": null, "2C": 'X', "3C": null });
     });
 
-    it("removes the marker ID from the openSpaces array", function() {
-      board.addMarker('X', '2C')
-      var openSpacesArray = board.openSpaces
-      expect(openSpacesArray).toEqual(["1A", "2A", "3A", "1B", "2B", "3B", "1C", "3C"]);
-    });
   });
 
+  describe("#checkTrioForWin", function() {
+    it("fails to find a winning opportunity", function() {
+      board.addMarker('X', '2C');
+      board.addMarker('O', '3C');
+      board.addMarker('X', '1C');
+      var trioResult = board.checkTrioForWin(player.marker, '1C', '2C', '3C');
+      expect(trioResult).toEqual(false);
+    });
+
+    it("finds a winning opportunity", function() {
+      board.addMarker('X', '2C');
+      board.addMarker('X', '1C');
+      var trioResult = board.checkTrioForWin(player.marker, '1C', '2C', '3C');
+      expect(trioResult).toEqual(true);
+    });
+  });
 })

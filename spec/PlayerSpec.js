@@ -7,15 +7,15 @@ describe("Player", function() {
     game = new Game(player, computer, board);
   })
 
-  describe("#playerMove", function() {
-    it("calls a click event listener", function() {
+  // describe("#playerMove", function() {
+  //   it("calls a click event listener", function() {
 
-    });
+  //   });
 
-    it("calls #addMarker on the board", function() {
+  //   it("calls #addMarker on the board", function() {
 
-    });
+  //   });
 
-  });
+  // });
 
 })
