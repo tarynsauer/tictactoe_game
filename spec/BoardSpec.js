@@ -71,4 +71,42 @@ describe("Board", function() {
       expect(result).toEqual('3C');
     });
   });
+
+  describe("#checkForCorner", function() {
+    it("returns coordinate of open corner", function() {
+      board.addMarker('X', '1A');
+      board.addMarker('O', '3A');
+      // board.addMarker('X', '3C');
+      var result = board.checkForCorner(computer.marker);
+      expect(result).toEqual('3C');
+    });
+
+    it("returns false if no open corners", function() {
+      board.addMarker('X', '1A');
+      board.addMarker('O', '3A');
+      board.addMarker('X', '1C');
+      board.addMarker('O', '3C');
+      var result = board.checkForCorner(computer.marker);
+      expect(result).toEqual(false);
+    });
+  });
+
+  describe("#checkForSide", function() {
+    it("returns coordinate of open side", function() {
+      board.addMarker('X', '2A');
+      board.addMarker('O', '2C');
+      board.addMarker('X', '1B');
+      var result = board.checkForSide(computer.marker);
+      expect(result).toEqual('3B');
+    });
+
+    it("returns false if no open sides", function() {
+      board.addMarker('X', '2A');
+      board.addMarker('O', '2C');
+      board.addMarker('X', '1B');
+      board.addMarker('O', '3B');
+      var result = board.checkForSide(computer.marker);
+      expect(result).toEqual(false);
+    });
+  });
 })

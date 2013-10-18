@@ -25,7 +25,8 @@ $( document ).ready(function() {
 // Board -------------------------------------
   Board = function () {
     this.filledSpaces = { "1A": null, "2A": null, "3A": null,
-    "1B": null, "2B": null, "3B": null, "1C": null, "2C": null, "3C": null };
+                          "1B": null, "2B": null, "3B": null,
+                          "1C": null, "2C": null, "3C": null };
     this.cells = $( ".board" );
   }
 
@@ -36,7 +37,7 @@ $( document ).ready(function() {
 
   Board.prototype.findEmptyCell = function(cellSet) {
     var result;
-    _.each(trio, function (cellValue, cellID) {
+    _.each(cellSet, function (cellValue, cellID) {
       if (cellValue === null) {
         result = cellID;
       }
@@ -52,15 +53,9 @@ $( document ).ready(function() {
     if (equality === false) {
       return false;
     } else {
-      // this needs to be refactored to findEmptyCell()
-      var result;
-      _.each(trio, function (cellValue, cellID) {
-        if (cellValue === null) {
-          result = cellID;
-        }
-      });
-      return result;
+      var emptyCell = this.findEmptyCell(trio);
     }
+    return emptyCell;
   };
 
   Board.prototype.findPotentialWin = function(marker){
@@ -100,11 +95,24 @@ $( document ).ready(function() {
 
   Board.prototype.checkForCorner = function(marker){
     // take a corner if it's free
-
+    var corners = _.pick(this.filledSpaces, '1A', '1C', '3A', '3C');
+    var emptyCorner = this.findEmptyCell(corners);
+    if (_.isEmpty(emptyCorner)) {
+      return false;
+    } else {
+      return emptyCorner;
+    }
   };
 
-  Board.prototype.checkSides = function(marker){
+  Board.prototype.checkForSide = function(marker){
     // take a side position if it's free
+    var sides = _.pick(this.filledSpaces, '2A', '2C', '1B', '3B');
+    var emptySide = this.findEmptyCell(sides);
+    if (_.isEmpty(emptySide)) {
+      return false;
+    } else {
+      return emptySide;
+    }
   };
 
 // Game -------------------------------------
