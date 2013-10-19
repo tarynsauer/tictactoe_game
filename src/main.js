@@ -1,11 +1,10 @@
 $( document ).ready(function() {
 // Player -------------------------------------
-  Player = function (marker) {
-    this.marker = marker;
+  Player = function () {
   }
 
   Player.prototype.playerMove = function( board ) {
-    var playerMarker = this.marker;
+    var playerMarker = this.playerTwoMarker;
     $( board.cells ).click(function(event) {
       var cellId = event.target.id;
       board.addMarker(playerMarker, cellId);
@@ -13,21 +12,38 @@ $( document ).ready(function() {
   };
 
 // Computer -------------------------------------
-  Computer = function (marker) {
-    this.marker = marker;
+  Computer = function () {
   }
 
   Computer.prototype.computerMove = function( board ) {
-    var computerMarker = this.marker;
-    // add logic for computer moves
+    var computerMarker = this.playerOneMarker;
+    var playerMarker = this.playerTwoMarker;
+    var win = board.findPotentialWin(computerMarker);
+    var block = board.findPotentialWin(playerMarker);
+    var corner = board.checkForCorner(computerMarker);
+    var side = board.checkForSide(computerMarker);
+
+    if (win != false) {
+      board.addMarker(computerMarker, win);
+    } else if (block != false) {
+      board.addMarker(computerMarker, block);
+    } else if (corner != false) {
+      board.addMarker(computerMarker, corner);
+    } else if (side != false) {
+      board.addMarker(computerMarker, side);
+    } else {
+      board.addMarker(computerMarker, '2B');
+    }
   };
 
 // Board -------------------------------------
-  Board = function () {
+  Board = function (playerOneMarker, playerTwoMarker) {
     this.filledSpaces = { "1A": null, "2A": null, "3A": null,
                           "1B": null, "2B": null, "3B": null,
                           "1C": null, "2C": null, "3C": null };
     this.cells = $( ".board" );
+    this.playerOneMarker = playerOneMarker;
+    this.playerTwoMarker = playerTwoMarker;
   }
 
   Board.prototype.addMarker = function(marker, cellId){
@@ -45,31 +61,31 @@ $( document ).ready(function() {
     return result;
   };
 
-  Board.prototype.checkTrioForWin = function(marker, cell1, cell2, cell3){
-    var trio = _.pick(this.filledSpaces, cell1, cell2, cell3);
-    var trioValues = _.values(trio);
-    var trioValuesSorted = trioValues.sort();
-    var equality = _.isEqual(trioValuesSorted, [marker, marker, null])
+  Board.prototype.checkLineForWin = function(marker, cell1, cell2, cell3){
+    var line = _.pick(this.filledSpaces, cell1, cell2, cell3);
+    var lineValues = _.values(line);
+    var lineValuesSorted = lineValues.sort();
+    var equality = _.isEqual(lineValuesSorted, [marker, marker, null])
     if (equality === false) {
       return false;
     } else {
-      var emptyCell = this.findEmptyCell(trio);
+      var emptyCell = this.findEmptyCell(line);
     }
     return emptyCell;
   };
 
   Board.prototype.findPotentialWin = function(marker){
     // check if there is a potential winning move
-    var rowOne = this.checkTrioForWin(marker, '1A', '1B', '1C');
-    var rowTwo = this.checkTrioForWin(marker, '2A', '2B', '2C');
-    var rowThree = this.checkTrioForWin(marker, '3A', '3B', '3C');
+    var rowOne = this.checkLineForWin(marker, '1A', '1B', '1C');
+    var rowTwo = this.checkLineForWin(marker, '2A', '2B', '2C');
+    var rowThree = this.checkLineForWin(marker, '3A', '3B', '3C');
 
-    var colOne = this.checkTrioForWin(marker, '1A', '2A', '3A');
-    var colTwo = this.checkTrioForWin(marker, '1B', '2B', '3B');
-    var colThree = this.checkTrioForWin(marker, '1C', '2C', '3C');
+    var colOne = this.checkLineForWin(marker, '1A', '2A', '3A');
+    var colTwo = this.checkLineForWin(marker, '1B', '2B', '3B');
+    var colThree = this.checkLineForWin(marker, '1C', '2C', '3C');
 
-    var diagonalOne = this.checkTrioForWin(marker, '1A', '2B', '3C');
-    var diagonalTwo = this.checkTrioForWin(marker, '3A', '2B', '1C');
+    var diagonalOne = this.checkLineForWin(marker, '1A', '2B', '3C');
+    var diagonalTwo = this.checkLineForWin(marker, '3A', '2B', '1C');
 
     if (rowOne != false) {
       return rowOne;
@@ -166,8 +182,8 @@ $( document ).ready(function() {
   }
 
 // Driver code -------------------------------------
-  var computer = new Computer('O');
-  var player = new Player('X');
-  var board = new Board();
+  var computer = new Computer();
+  var player = new Player();
+  var board = new Board('O','X');
   var game = new Game(player, computer, board);
 });

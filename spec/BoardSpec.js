@@ -1,9 +1,9 @@
 describe("Board", function() {
 
   beforeEach(function() {
-    computer = new Computer('O');
-    player = new Player('X');
-    board = new Board();
+    computer = new Computer();
+    player = new Player();
+    board = new Board('O','X');
     game = new Game(player, computer, board);
     $('body').affix('table.tableBoard tr#rowA')
     $('tr#rowA').affix('td#1A.board')
@@ -38,19 +38,19 @@ describe("Board", function() {
 
   });
 
-  describe("#checkTrioForWin", function() {
+  describe("#checkLineForWin", function() {
     it("fails to find a winning opportunity", function() {
       board.addMarker('X', '2C');
       board.addMarker('O', '3C');
       board.addMarker('X', '1C');
-      var trioResult = board.checkTrioForWin(player.marker, '1C', '2C', '3C');
+      var trioResult = board.checkLineForWin(board.playerTwoMarker, '1C', '2C', '3C');
       expect(trioResult).toEqual(false);
     });
 
     it("finds a winning opportunity", function() {
       board.addMarker('X', '2C');
       board.addMarker('X', '1C');
-      var trioResult = board.checkTrioForWin(player.marker, '1C', '2C', '3C');
+      var trioResult = board.checkLineForWin(board.playerTwoMarker, '1C', '2C', '3C');
       expect(trioResult).toEqual('3C');
     });
   });
@@ -60,14 +60,14 @@ describe("Board", function() {
       board.addMarker('X', '2C');
       board.addMarker('O', '3C');
       board.addMarker('O', '1C');
-      var result = board.findPotentialWin(computer.marker);
+      var result = board.findPotentialWin(board.playerOneMarker);
       expect(result).toEqual(false);
     });
 
     it("finds a winning opportunity", function() {
       board.addMarker('O', '2C');
       board.addMarker('O', '1C');
-      var result = board.findPotentialWin(computer.marker);
+      var result = board.findPotentialWin(board.playerOneMarker);
       expect(result).toEqual('3C');
     });
   });
@@ -77,7 +77,7 @@ describe("Board", function() {
       board.addMarker('X', '1A');
       board.addMarker('O', '3A');
       // board.addMarker('X', '3C');
-      var result = board.checkForCorner(computer.marker);
+      var result = board.checkForCorner(board.playerOneMarker);
       expect(result).toEqual('3C');
     });
 
@@ -86,7 +86,7 @@ describe("Board", function() {
       board.addMarker('O', '3A');
       board.addMarker('X', '1C');
       board.addMarker('O', '3C');
-      var result = board.checkForCorner(computer.marker);
+      var result = board.checkForCorner(board.playerOneMarker);
       expect(result).toEqual(false);
     });
   });
@@ -96,7 +96,7 @@ describe("Board", function() {
       board.addMarker('X', '2A');
       board.addMarker('O', '2C');
       board.addMarker('X', '1B');
-      var result = board.checkForSide(computer.marker);
+      var result = board.checkForSide(board.playerOneMarker);
       expect(result).toEqual('3B');
     });
 
@@ -105,7 +105,7 @@ describe("Board", function() {
       board.addMarker('O', '2C');
       board.addMarker('X', '1B');
       board.addMarker('O', '3B');
-      var result = board.checkForSide(computer.marker);
+      var result = board.checkForSide(board.playerOneMarker);
       expect(result).toEqual(false);
     });
   });
