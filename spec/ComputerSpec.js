@@ -3,7 +3,7 @@ describe("Computer", function() {
   beforeEach(function() {
     computer = new Computer('O');
     player = new Player('X');
-    board = new Board();
+    board = new Board(player, computer);
     game = new Game(player, computer, board);
     $('body').affix('table.tableBoard tr#rowA')
     $('tr#rowA').affix('td#1A.board')
@@ -21,9 +21,9 @@ describe("Computer", function() {
 
   describe("#computerMove", function() {
     it("calls #findPotentialWin", function() {
-      spyOn(Game.prototype, "findPotentialWin");
+      spyOn(Board.prototype, "findPotentialWin");
       computer.computerMove();
-      expect(Game.prototype.findPotentialWin).toHaveBeenCalled();
+      expect(Board.prototype.findPotentialWin).toHaveBeenCalled();
     });
 
     // it("calls #addMarker on the board", function() {

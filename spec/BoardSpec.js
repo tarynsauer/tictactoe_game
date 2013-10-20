@@ -1,10 +1,10 @@
 describe("Board", function() {
 
   beforeEach(function() {
-    computer = new Computer();
-    player = new Player();
-    board = new Board('O','X');
-    game = new Game(player, computer, board);
+    computer = new Computer('O');
+    player = new Player('X');
+    board = new Board(computer,player);
+    game = new Game(computer, player, board);
     $('body').affix('table.tableBoard tr#rowA')
     $('tr#rowA').affix('td#1A.board')
     $('tr#rowA').affix('td#1B.board')

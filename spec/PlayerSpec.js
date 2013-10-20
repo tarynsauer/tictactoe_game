@@ -1,9 +1,9 @@
 describe("Player", function() {
 
   beforeEach(function() {
-    computer = new Computer();
-    player = new Player();
-    board = new Board('O','X');
+    computer = new Computer('O');
+    player = new Player("X");
+    board = new Board(player, computer);
     game = new Game(player, computer, board);
   })
 

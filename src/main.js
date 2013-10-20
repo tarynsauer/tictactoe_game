@@ -1,49 +1,45 @@
 $( document ).ready(function() {
 // Player -------------------------------------
-  Player = function () {
+  Player = function (marker) {
+    this.marker = marker;
+    this.turn = 0;
   }
-
-  Player.prototype.playerMove = function( board ) {
-    var playerMarker = this.playerTwoMarker;
-    $( board.cells ).click(function(event) {
-      var cellId = event.target.id;
-      board.addMarker(playerMarker, cellId);
-    });
-  };
 
 // Computer -------------------------------------
-  Computer = function () {
+  Computer = function (marker) {
+    this.marker = marker;
+    this.turn = 0;
   }
 
-  Computer.prototype.computerMove = function( board ) {
-    var computerMarker = this.playerOneMarker;
-    var playerMarker = this.playerTwoMarker;
-    var win = board.findPotentialWin(computerMarker);
-    var block = board.findPotentialWin(playerMarker);
-    var corner = board.checkForCorner(computerMarker);
-    var side = board.checkForSide(computerMarker);
+  // Computer.prototype.computerMove = function( board ) {
+  //   var computerMarker = board.playerOneMarker;
+  //   var playerMarker = board.playerTwoMarker;
+  //   var win = board.findPotentialWin(computerMarker);
+  //   var block = board.findPotentialWin(playerMarker);
+  //   var corner = board.checkForCorner(computerMarker);
+  //   var side = board.checkForSide(computerMarker);
 
-    if (win != false) {
-      board.addMarker(computerMarker, win);
-    } else if (block != false) {
-      board.addMarker(computerMarker, block);
-    } else if (corner != false) {
-      board.addMarker(computerMarker, corner);
-    } else if (side != false) {
-      board.addMarker(computerMarker, side);
-    } else {
-      board.addMarker(computerMarker, '2B');
-    }
-  };
+  //   if (win != false) {
+  //     board.addMarker(computerMarker, win);
+  //   } else if (block != false) {
+  //     board.addMarker(playerMarker, block);
+  //   } else if (corner != false) {
+  //     board.addMarker(computerMarker, corner);
+  //   } else if (side != false) {
+  //     board.addMarker(computerMarker, side);
+  //   } else {
+  //     board.addMarker(computerMarker, '2B');
+  //   }
+  // };
 
 // Board -------------------------------------
-  Board = function (playerOneMarker, playerTwoMarker) {
+  Board = function (playerOne, playerTwo) {
     this.filledSpaces = { "1A": null, "2A": null, "3A": null,
                           "1B": null, "2B": null, "3B": null,
                           "1C": null, "2C": null, "3C": null };
     this.cells = $( ".board" );
-    this.playerOneMarker = playerOneMarker;
-    this.playerTwoMarker = playerTwoMarker;
+    this.playerOneMarker = playerOne.marker;
+    this.playerTwoMarker = playerTwo.marker;
   }
 
   Board.prototype.addMarker = function(marker, cellId){
@@ -131,29 +127,56 @@ $( document ).ready(function() {
     }
   };
 
+  Board.prototype.playerMove = function( player ) {
+    var playerMarker = player.marker;
+    var self = this;
+    if (player.turn === 1) {
+      $( this.cells ).click(function(event) {
+        var cellId = event.target.id;
+        self.addMarker(playerMarker, cellId);
+        player.turn = 0;
+      });
+    }
+  };
+
+  Computer.prototype.computerMove = function( computer ) {
+    var computerMarker = this.playerOneMarker;
+    var playerMarker = this.playerTwoMarker;
+    var win = this.findPotentialWin(computerMarker);
+    var block = this.findPotentialWin(playerMarker);
+    var corner = this.checkForCorner(computerMarker);
+    var side = this.checkForSide(computerMarker);
+
+    if (computer.turn === 1) {
+      if (win != false) {
+        this.addMarker(computerMarker, win);
+      } else if (block != false) {
+        this.addMarker(playerMarker, block);
+      } else if (corner != false) {
+        this.addMarker(computerMarker, corner);
+      } else if (side != false) {
+        this.addMarker(computerMarker, side);
+      } else {
+        this.addMarker(computerMarker, '2B');
+      }
+    }
+    computer.turn = 0;
+  };
+
 // Game -------------------------------------
-  Game = function (player, computer, board) {
-    this.player = player;
-    this.computer = computer;
+  Game = function (playerOne, playerTwo, board) {
+    this.playerOne = playerOne;
+    this.playerTwo = playerTwo;
     this.board = board;
     this.winner;
     this.newGame = $('#newGame');
-    this.playersTurn = this.whoGoesFirst();
+    this.whoGoesFirst();
     this.startGame();
   }
 
   Game.prototype.startGame = function() {
     this.restartGameListener();
     this.checkGameStatus();
-  }
-
-  Game.prototype.nextPlayersTurn = function() {
-    if (this.playersTurn === 'player') {
-      this.playersTurn = 'computer';
-    } else {
-      this.playersTurn = 'player';
-      this.player.playerMove(this.board);
-    }
   }
 
   Game.prototype.restartGameListener = function() {
@@ -174,16 +197,15 @@ $( document ).ready(function() {
   Game.prototype.whoGoesFirst = function(){
     var playerGoesFirst = ['true','false'][Math.round(Math.random())];
     if (playerGoesFirst === 'true') {
-      this.player.playerMove(this.board);
-      return 'player';
+      this.playerOne.turn = 1;
     } else {
-      return 'computer';
+      this.playerTwo.turn = 1;
     }
   }
 
 // Driver code -------------------------------------
-  var computer = new Computer();
-  var player = new Player();
-  var board = new Board('O','X');
+  var computer = new Computer('O');
+  var player = new Player('X');
+  var board = new Board(computer, player);
   var game = new Game(player, computer, board);
 });

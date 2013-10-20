@@ -3,7 +3,7 @@ describe("Game", function() {
   beforeEach(function() {
     computer = new Computer('O');
     player = new Player('X');
-    board = new Board();
+    board = new Board(player, computer);
   })
 
   describe("click event",function() {
@@ -45,11 +45,6 @@ describe("Game", function() {
       expect(Game.prototype.whoGoesFirst).toHaveBeenCalled();
     });
 
-    it("#whoGoesFirst returns player or computer", function() {
-      game = new Game(player, computer, board);
-      var whoGoesFirstString = game.playersTurn
-      expect(whoGoesFirstString).toEqual(jasmine.any(String));
-    });
   });
 
 })
