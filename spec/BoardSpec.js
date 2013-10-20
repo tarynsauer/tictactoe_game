@@ -1,8 +1,8 @@
 describe("Board", function() {
 
   beforeEach(function() {
-    computer = new Computer('O');
-    player = new Player('X');
+    computer = new Player('O', 'human');
+    player = new Player('X', 'human');
     board = new Board(computer,player);
     game = new Game(computer, player, board);
     $('body').affix('table.tableBoard tr#rowA')
@@ -107,6 +107,18 @@ describe("Board", function() {
       board.addMarker('O', '3B');
       var result = board.checkForSide(board.playerOneMarker);
       expect(result).toEqual(false);
+    });
+  });
+
+  describe("#opponent", function() {
+    it("returns opponent player X", function() {
+      var oppPlayer = board.opponent(computer);
+      expect(oppPlayer.marker).toEqual('X');
+    });
+
+    it("returns opponent player Y", function() {
+      var oppPlayer = board.opponent(player);
+      expect(oppPlayer.marker).toEqual('O');
     });
   });
 })

@@ -1,36 +1,10 @@
 $( document ).ready(function() {
 // Player -------------------------------------
-  Player = function (marker) {
+  Player = function (marker, playerType) {
     this.marker = marker;
     this.turn = 0;
+    this.playerType = playerType;
   }
-
-// Computer -------------------------------------
-  Computer = function (marker) {
-    this.marker = marker;
-    this.turn = 0;
-  }
-
-  // Computer.prototype.computerMove = function( board ) {
-  //   var computerMarker = board.playerOneMarker;
-  //   var playerMarker = board.playerTwoMarker;
-  //   var win = board.findPotentialWin(computerMarker);
-  //   var block = board.findPotentialWin(playerMarker);
-  //   var corner = board.checkForCorner(computerMarker);
-  //   var side = board.checkForSide(computerMarker);
-
-  //   if (win != false) {
-  //     board.addMarker(computerMarker, win);
-  //   } else if (block != false) {
-  //     board.addMarker(playerMarker, block);
-  //   } else if (corner != false) {
-  //     board.addMarker(computerMarker, corner);
-  //   } else if (side != false) {
-  //     board.addMarker(computerMarker, side);
-  //   } else {
-  //     board.addMarker(computerMarker, '2B');
-  //   }
-  // };
 
 // Board -------------------------------------
   Board = function (playerOne, playerTwo) {
@@ -38,6 +12,8 @@ $( document ).ready(function() {
                           "1B": null, "2B": null, "3B": null,
                           "1C": null, "2C": null, "3C": null };
     this.cells = $( ".board" );
+    this.playerOne = playerOne;
+    this.playerTwo = playerTwo;
     this.playerOneMarker = playerOne.marker;
     this.playerTwoMarker = playerTwo.marker;
   }
@@ -127,6 +103,22 @@ $( document ).ready(function() {
     }
   };
 
+  Board.prototype.opponent = function(player) {
+    if (player === this.playerOne) {
+      return this.playerTwo;
+    } else {
+      return this.playerOne;
+    }
+  };
+
+  Board.prototype.opponentMove = function(player) {
+    if (player.playerType === 'computer') {
+      this.computerMove(player);
+    } else {
+      this.playerMove(player);
+    }
+  };
+
   Board.prototype.playerMove = function( player ) {
     var playerMarker = player.marker;
     var self = this;
@@ -135,13 +127,17 @@ $( document ).ready(function() {
         var cellId = event.target.id;
         self.addMarker(playerMarker, cellId);
         player.turn = 0;
+        var opponent = self.opponent(player);
+        opponent.turn = 1;
+        self.opponentMove(opponent);
       });
     }
   };
 
-  Computer.prototype.computerMove = function( computer ) {
-    var computerMarker = this.playerOneMarker;
-    var playerMarker = this.playerTwoMarker;
+  Board.prototype.computerMove = function( computer ) {
+    var computerMarker = computer.marker;
+    var opponent = this.opponent(computer);
+    var opponentMarker = this.opponent.marker;
     var win = this.findPotentialWin(computerMarker);
     var block = this.findPotentialWin(playerMarker);
     var corner = this.checkForCorner(computerMarker);
@@ -151,7 +147,7 @@ $( document ).ready(function() {
       if (win != false) {
         this.addMarker(computerMarker, win);
       } else if (block != false) {
-        this.addMarker(playerMarker, block);
+        this.addMarker(opponentMarker, block);
       } else if (corner != false) {
         this.addMarker(computerMarker, corner);
       } else if (side != false) {
@@ -161,6 +157,8 @@ $( document ).ready(function() {
       }
     }
     computer.turn = 0;
+    opponent.turn = 1;
+    this.opponentMove(opponent);
   };
 
 // Game -------------------------------------
@@ -174,24 +172,51 @@ $( document ).ready(function() {
     this.startGame();
   }
 
-  Game.prototype.startGame = function() {
-    this.restartGameListener();
-    this.checkGameStatus();
-  }
-
   Game.prototype.restartGameListener = function() {
     this.newGame.click(function() {
       location.reload();
     });
   }
 
+  Game.prototype.winnerCheck = function(marker, cell1, cell2, cell3) {
+    var line = _.pick(this.board.filledSpaces, cell1, cell2, cell3);
+    var lineValues = _.values(line);
+    var equality = _.isEqual(lineValues, [marker, marker, marker])
+    if (equality) {
+      $('#gameStatusMessage').html('Game over! ' + marker + ' wins!');
+    }
+  }
+
   Game.prototype.checkGameStatus = function(){
-    var self = this.board;
+    var self = this;
     this.board.cells.click(function() {
-      if (self.filledSpaces.length === 9) {
-        $('#gameStatusMessage').html('Game over!');
-      }
+      var rowOne = self.winnerCheck(marker, '1A', '1B', '1C');
+      var rowTwo = self.winnerCheck(marker, '2A', '2B', '2C');
+      var rowThree = self.winnerCheck(marker, '3A', '3B', '3C');
+
+      var colOne = self.winnerCheck(marker, '1A', '2A', '3A');
+      var colTwo = self.winnerCheck(marker, '1B', '2B', '3B');
+      var colThree = self.winnerCheck(marker, '1C', '2C', '3C');
+
+      var diagonalOne = self.winnerCheck(marker, '1A', '2B', '3C');
+      var diagonalTwo = self.winnerCheck(marker, '3A', '2B', '1C');
     });
+    // var lineValues = _.values(line);
+    // var lineValuesSorted = lineValues.sort();
+    // var equality = _.isEqual(lineValuesSorted, [marker, marker, null])
+    // if (equality === false) {
+    //   return false;
+    // } else {
+    //   var emptyCell = this.findEmptyCell(line);
+    // }
+    // return emptyCell;
+
+    // this.board.cells.click(function() {
+    //   if (self.filledSpaces.length === 9) {
+
+    //     $('#gameStatusMessage').html('Game over!');
+    //   }
+    // });
   }
 
   Game.prototype.whoGoesFirst = function(){
@@ -203,9 +228,25 @@ $( document ).ready(function() {
     }
   }
 
+  Game.prototype.setUpPlayerByType = function(player) {
+    // Trigger move logic based on player type
+    if (player.playerType === 'computer') {
+      board.computerMove(player);
+    } else {
+      board.playerMove(player);
+    }
+
+  }
+
+  Game.prototype.startGame = function() {
+    this.restartGameListener();
+    this.setUpPlayerByType(this.playerOne);
+    this.setUpPlayerByType(this.playerTwo);
+  }
+
 // Driver code -------------------------------------
-  var computer = new Computer('O');
-  var player = new Player('X');
+  var computer = new Player('O', 'human');
+  var player = new Player('X', 'human');
   var board = new Board(computer, player);
   var game = new Game(player, computer, board);
 });
