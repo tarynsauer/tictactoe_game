@@ -19,9 +19,17 @@ $( document ).ready(function() {
   }
 
   Board.prototype.addMarker = function(marker, cellId){
-    $( "#" + cellId ).html(marker);
-    this.filledSpaces[cellId] = marker;
-    this.checkGameStatus(marker);
+    var currentValue = $( "#" + cellId ).html();
+    if (_.isEmpty(currentValue)) {
+      $( "#" + cellId ).html(marker);
+      $( "#" + cellId ).removeClass("board");
+      this.filledSpaces[cellId] = marker;
+      this.checkGameStatus(marker);
+      return true;
+    } else {
+      return false;
+    }
+
   };
 
   Board.prototype.findEmptyCell = function(cellSet) {
@@ -60,22 +68,12 @@ $( document ).ready(function() {
     var diagonalOne = this.checkLineForWin(marker, '1A', '2B', '3C');
     var diagonalTwo = this.checkLineForWin(marker, '3A', '2B', '1C');
 
-    if (rowOne != false) {
-      return rowOne;
-    } else if (rowTwo != false) {
-      return rowTwo;
-    } else if (rowThree != false) {
-      return rowThree;
-    } else if (colOne != false) {
-      return colOne;
-    } else if (colTwo != false) {
-      return colTwo;
-    } else if (colThree != false) {
-      return colThree;
-    } else if (diagonalOne != false) {
-      return diagonalOne;
-    } else if (diagonalTwo != false) {
-      return diagonalTwo;
+    var checkResults = _.compact([rowOne, rowTwo, rowThree,
+                                colOne, colTwo, colThree,
+                                diagonalOne, diagonalTwo]);
+
+    if (checkResults.length > 0) {
+      return checkResults.pop();
     } else {
       return false;
     }
@@ -126,11 +124,16 @@ $( document ).ready(function() {
     if (player.turn === 1) {
       $( this.cells ).click(function(event) {
         var cellId = event.target.id;
-        self.addMarker(playerMarker, cellId);
-        player.turn = 0;
-        var opponent = self.opponent(player);
-        opponent.turn = 1;
-        self.opponentMove(opponent);
+        var result = self.addMarker(playerMarker, cellId);
+        if (result) {
+          player.turn = 0;
+          var opponent = self.opponent(player);
+          opponent.turn = 1;
+          self.opponentMove(opponent);
+        } else {
+          self.playerMove(player);
+        }
+
       });
     }
   };
@@ -147,6 +150,7 @@ $( document ).ready(function() {
       var side = self.checkForSide(computerMarker);
 
       if (computer.turn === 1) {
+        console.log(computer.turn);
         if (win != false) {
           self.addMarker(computerMarker, win);
         } else if (block != false) {
@@ -158,19 +162,20 @@ $( document ).ready(function() {
         } else if (self.filledSpaces['2B'] === null) {
           self.addMarker(computerMarker, '2B');
         }
+        computer.turn = 0;
+        opponent.turn = 1;
+        self.opponentMove(opponent);
       }
-      computer.turn = 0;
-      opponent.turn = 1;
-      self.opponentMove(opponent);
     }, 2000);
   };
 
   Board.prototype.winnerCheck = function(marker, cell1, cell2, cell3) {
+    var self = this;
     var line = _.pick(this.filledSpaces, cell1, cell2, cell3);
     var lineValues = _.values(line);
     var equality = _.isEqual(lineValues, [marker, marker, marker])
     if (equality) {
-      $('#gameStatusMessage').html('Game over! ' + marker + ' wins!');
+      $('#gameMessage').html('Game over! ' + marker + ' wins!');
     }
   }
 
@@ -190,7 +195,7 @@ $( document ).ready(function() {
     var totalMarks = _.values(self.filledSpaces);
     totalMarks = _.compact(totalMarks);
     if (totalMarks.length === 9) {
-      $('#gameStatusMessage').html("Game over! It's a tie!");
+      $('#gameMessage').html("Game over! It's a tie!");
     }
   }
 
@@ -215,7 +220,9 @@ $( document ).ready(function() {
     var playerGoesFirst = ['true','false'][Math.round(Math.random())];
     if (playerGoesFirst === 'true') {
       this.playerOne.turn = 1;
+      $('#gameMessage').html(this.playerOne.marker + " goes first!");
     } else {
+      $('#gameMessage').html(this.playerTwo.marker + " goes first!");
       this.playerTwo.turn = 1;
     }
   }
