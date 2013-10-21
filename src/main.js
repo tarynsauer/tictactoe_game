@@ -170,6 +170,7 @@ $( document ).ready(function() {
     var lineValues = _.values(line);
     var equality = _.isEqual(lineValues, [marker, marker, marker])
     if (equality) {
+      // $('#gameStatusMessage').html('Game over!');
       $('#gameStatusMessage').html('Game over! ' + marker + ' wins!');
     }
   }
@@ -189,9 +190,8 @@ $( document ).ready(function() {
 
     var totalMarks = _.values(self.filledSpaces);
     totalMarks = _.compact(totalMarks);
-    console.log(totalMarks);
     if (totalMarks.length === 9) {
-      $('#gameStatusMessage').html('Game over!');
+      $('#gameStatusMessage').html("Game over! It's a tie!");
     }
   }
 
@@ -237,8 +237,13 @@ $( document ).ready(function() {
     this.setUpPlayerByType(this.playerTwo);
   }
 
+  Game.prototype.endGame = function() {
+    this.playerOne.turn = 2;
+    this.playerTwo.turn = 2;
+  }
+
 // Driver code -------------------------------------
-  var computer = new Player('O', 'computer');
+  var computer = new Player('O', 'human');
   var player = new Player('X', 'computer');
   var board = new Board(computer, player);
   var game = new Game(player, computer, board);

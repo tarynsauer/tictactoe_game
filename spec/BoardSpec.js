@@ -145,6 +145,13 @@ describe("Board", function() {
       expect(Board.prototype.checkGameStatus).toHaveBeenCalled();
     });
 
+    it("calls #winnerCheck", function() {
+      spyOn(Board.prototype, "winnerCheck");
+      game = new Game(player, computer, board);
+      board.addMarker('X', '1A');
+      expect(Board.prototype.winnerCheck).toHaveBeenCalled();
+    });
+
     it("calls #checkGameStatus", function() {
       game = new Game(player, computer, board);
       board.addMarker('X', '1A');
@@ -157,8 +164,76 @@ describe("Board", function() {
       board.addMarker('O', '2C');
       board.addMarker('X', '3C');
       var message = $('#gameStatusMessage').html();
-      expect(message).toEqual('Game over!');
+      expect(message).toEqual("Game over! It's a tie!");
     });
   });
+
+  describe("#winnerCheck", function() {
+    it("identifies a winning row", function() {
+      game = new Game(player, computer, board);
+      board.addMarker('X', '1A');
+      board.addMarker('O', '2B');
+      board.addMarker('X', '3A');
+      board.addMarker('O', '1B');
+      board.addMarker('X', '2A');
+      var message = $('#gameStatusMessage').html();
+      expect(message).toEqual('Game over! X wins!');
+    });
+
+    it("identifies a winning column", function() {
+      game = new Game(player, computer, board);
+      board.addMarker('X', '1A');
+      board.addMarker('O', '2B');
+      board.addMarker('X', '1B');
+      board.addMarker('O', '2C');
+      board.addMarker('X', '1C');
+      var message = $('#gameStatusMessage').html();
+      expect(message).toEqual('Game over! X wins!');
+    });
+
+    it("identifies a winning diagonal line", function() {
+      game = new Game(player, computer, board);
+      board.addMarker('O', '1A');
+      board.addMarker('X', '3B');
+      board.addMarker('O', '2B');
+      board.addMarker('X', '2C');
+      board.addMarker('O', '3C');
+      var message = $('#gameStatusMessage').html();
+      expect(message).toEqual('Game over! O wins!');
+    });
+
+  });
+
+//   describe("#computerMove", function() {
+
+//       beforeEach(function() {
+//         computer = new Player('O', 'computer');
+//         player = new Player('X', 'human');
+//         board = new Board(computer,player);
+//         $('body').affix('table.tableBoard tr#rowA')
+//         $('tr#rowA').affix('td#1A.board')
+//         $('tr#rowA').affix('td#1B.board')
+//         $('tr#rowA').affix('td#1C.board')
+//         $('table.tableBoard').affix('tr#rowB')
+//         $('tr#rowB').affix('td#2A.board')
+//         $('tr#rowB').affix('td#2B.board')
+//         $('tr#rowB').affix('td#2C.board')
+//         $('table.tableBoard').affix('tr#rowC')
+//         $('tr#rowC').affix('td#3A.board')
+//         $('tr#rowC').affix('td#3B.board')
+//         $('tr#rowC').affix('td#3C.board')
+//       });
+
+//       afterEach(function(){
+//         $('.tableBoard').remove();
+//       });
+
+//     it("calls #opponent", function() {
+//       spyOn(Board.prototype, "opponent");
+//       computer.turn = 1;
+//       player.turn = 0;
+//       board.computerMove(computer);
+//      expect(Board.prototype.opponent).toHaveBeenCalled();
+//     });
 
 })
