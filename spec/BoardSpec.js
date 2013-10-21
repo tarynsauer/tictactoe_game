@@ -53,6 +53,16 @@ describe("Board", function() {
       var trioResult = board.checkLineForWin(board.playerTwoMarker, '1C', '2C', '3C');
       expect(trioResult).toEqual('3C');
     });
+
+    it("finds a winning opportunity", function() {
+      board.addMarker('O', '2B');
+      board.addMarker('X', '1C');
+      board.addMarker('O', '3B');
+      board.addMarker('X', '3A');
+      board.addMarker('O', '3C');
+      var trioResult = board.checkLineForWin(board.playerOneMarker, '1B', '2B', '3B');
+      expect(trioResult).toEqual('1B');
+    });
   });
 
   describe("#findPotentialWin", function() {

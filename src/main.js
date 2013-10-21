@@ -39,10 +39,10 @@ $( document ).ready(function() {
     var lineValues = _.values(line);
     var lineValuesSorted = lineValues.sort();
     var equality = _.isEqual(lineValuesSorted, [marker, marker, null])
-    if (equality === false) {
-      return false;
-    } else {
+    if (equality) {
       var emptyCell = this.findEmptyCell(line);
+    } else {
+      return false;
     }
     return emptyCell;
   };
@@ -140,7 +140,7 @@ $( document ).ready(function() {
     setTimeout(function() {
       var computerMarker = computer.marker;
       var opponent = self.opponent(computer);
-      var opponentMarker = self.opponent.marker;
+      var opponentMarker = opponent.marker;
       var win = self.findPotentialWin(computerMarker);
       var block = self.findPotentialWin(opponentMarker);
       var corner = self.checkForCorner(computerMarker);
@@ -150,12 +150,12 @@ $( document ).ready(function() {
         if (win != false) {
           self.addMarker(computerMarker, win);
         } else if (block != false) {
-          self.addMarker(computerMarker, block);
+           self.addMarker(computerMarker, block);
         } else if (corner != false) {
           self.addMarker(computerMarker, corner);
         } else if (side != false) {
           self.addMarker(computerMarker, side);
-        } else {
+        } else if (self.filledSpaces['2B'] === null) {
           self.addMarker(computerMarker, '2B');
         }
       }
@@ -170,7 +170,6 @@ $( document ).ready(function() {
     var lineValues = _.values(line);
     var equality = _.isEqual(lineValues, [marker, marker, marker])
     if (equality) {
-      // $('#gameStatusMessage').html('Game over!');
       $('#gameStatusMessage').html('Game over! ' + marker + ' wins!');
     }
   }
@@ -228,7 +227,6 @@ $( document ).ready(function() {
     } else {
       board.playerMove(player);
     }
-
   }
 
   Game.prototype.startGame = function() {
