@@ -21,6 +21,7 @@ $( document ).ready(function() {
   Board.prototype.addMarker = function(marker, cellId){
     $( "#" + cellId ).html(marker);
     this.filledSpaces[cellId] = marker;
+    this.checkGameStatus(marker);
   };
 
   Board.prototype.findEmptyCell = function(cellSet) {
@@ -48,13 +49,13 @@ $( document ).ready(function() {
 
   Board.prototype.findPotentialWin = function(marker){
     // check if there is a potential winning move
-    var rowOne = this.checkLineForWin(marker, '1A', '1B', '1C');
-    var rowTwo = this.checkLineForWin(marker, '2A', '2B', '2C');
-    var rowThree = this.checkLineForWin(marker, '3A', '3B', '3C');
+    var rowOne = this.checkLineForWin(marker, '1A', '2A', '3A');
+    var rowTwo = this.checkLineForWin(marker, '1B', '2B', '3B');
+    var rowThree = this.checkLineForWin(marker, '1C', '2C', '3C');
 
-    var colOne = this.checkLineForWin(marker, '1A', '2A', '3A');
-    var colTwo = this.checkLineForWin(marker, '1B', '2B', '3B');
-    var colThree = this.checkLineForWin(marker, '1C', '2C', '3C');
+    var colOne = this.checkLineForWin(marker, '1A', '1B', '1C');
+    var colTwo = this.checkLineForWin(marker, '2A', '2B', '2C');
+    var colThree = this.checkLineForWin(marker, '3A', '3B', '3C');
 
     var diagonalOne = this.checkLineForWin(marker, '1A', '2B', '3C');
     var diagonalTwo = this.checkLineForWin(marker, '3A', '2B', '1C');
@@ -135,31 +136,64 @@ $( document ).ready(function() {
   };
 
   Board.prototype.computerMove = function( computer ) {
-    var computerMarker = computer.marker;
-    var opponent = this.opponent(computer);
-    var opponentMarker = this.opponent.marker;
-    var win = this.findPotentialWin(computerMarker);
-    var block = this.findPotentialWin(playerMarker);
-    var corner = this.checkForCorner(computerMarker);
-    var side = this.checkForSide(computerMarker);
+    var self = this;
+    setTimeout(function() {
+      var computerMarker = computer.marker;
+      var opponent = self.opponent(computer);
+      var opponentMarker = self.opponent.marker;
+      var win = self.findPotentialWin(computerMarker);
+      var block = self.findPotentialWin(opponentMarker);
+      var corner = self.checkForCorner(computerMarker);
+      var side = self.checkForSide(computerMarker);
 
-    if (computer.turn === 1) {
-      if (win != false) {
-        this.addMarker(computerMarker, win);
-      } else if (block != false) {
-        this.addMarker(opponentMarker, block);
-      } else if (corner != false) {
-        this.addMarker(computerMarker, corner);
-      } else if (side != false) {
-        this.addMarker(computerMarker, side);
-      } else {
-        this.addMarker(computerMarker, '2B');
+      if (computer.turn === 1) {
+        if (win != false) {
+          self.addMarker(computerMarker, win);
+        } else if (block != false) {
+          self.addMarker(computerMarker, block);
+        } else if (corner != false) {
+          self.addMarker(computerMarker, corner);
+        } else if (side != false) {
+          self.addMarker(computerMarker, side);
+        } else {
+          self.addMarker(computerMarker, '2B');
+        }
       }
-    }
-    computer.turn = 0;
-    opponent.turn = 1;
-    this.opponentMove(opponent);
+      computer.turn = 0;
+      opponent.turn = 1;
+      self.opponentMove(opponent);
+    }, 2000);
   };
+
+  Board.prototype.winnerCheck = function(marker, cell1, cell2, cell3) {
+    var line = _.pick(this.filledSpaces, cell1, cell2, cell3);
+    var lineValues = _.values(line);
+    var equality = _.isEqual(lineValues, [marker, marker, marker])
+    if (equality) {
+      $('#gameStatusMessage').html('Game over! ' + marker + ' wins!');
+    }
+  }
+
+  Board.prototype.checkGameStatus = function(marker){
+    var self = this;
+    self.winnerCheck(marker, '1A', '2A', '3A');
+    self.winnerCheck(marker, '1B', '2B', '3B');
+    self.winnerCheck(marker, '1C', '2C', '3C');
+
+    self.winnerCheck(marker, '1A', '1B', '1C');
+    self.winnerCheck(marker, '2A', '2B', '2C');
+    self.winnerCheck(marker, '3A', '3B', '3C');
+
+    self.winnerCheck(marker, '1A', '2B', '3C');
+    self.winnerCheck(marker, '3A', '2B', '1C');
+
+    var totalMarks = _.values(self.filledSpaces);
+    totalMarks = _.compact(totalMarks);
+    console.log(totalMarks);
+    if (totalMarks.length === 9) {
+      $('#gameStatusMessage').html('Game over!');
+    }
+  }
 
 // Game -------------------------------------
   Game = function (playerOne, playerTwo, board) {
@@ -176,47 +210,6 @@ $( document ).ready(function() {
     this.newGame.click(function() {
       location.reload();
     });
-  }
-
-  Game.prototype.winnerCheck = function(marker, cell1, cell2, cell3) {
-    var line = _.pick(this.board.filledSpaces, cell1, cell2, cell3);
-    var lineValues = _.values(line);
-    var equality = _.isEqual(lineValues, [marker, marker, marker])
-    if (equality) {
-      $('#gameStatusMessage').html('Game over! ' + marker + ' wins!');
-    }
-  }
-
-  Game.prototype.checkGameStatus = function(){
-    var self = this;
-    this.board.cells.click(function() {
-      var rowOne = self.winnerCheck(marker, '1A', '1B', '1C');
-      var rowTwo = self.winnerCheck(marker, '2A', '2B', '2C');
-      var rowThree = self.winnerCheck(marker, '3A', '3B', '3C');
-
-      var colOne = self.winnerCheck(marker, '1A', '2A', '3A');
-      var colTwo = self.winnerCheck(marker, '1B', '2B', '3B');
-      var colThree = self.winnerCheck(marker, '1C', '2C', '3C');
-
-      var diagonalOne = self.winnerCheck(marker, '1A', '2B', '3C');
-      var diagonalTwo = self.winnerCheck(marker, '3A', '2B', '1C');
-    });
-    // var lineValues = _.values(line);
-    // var lineValuesSorted = lineValues.sort();
-    // var equality = _.isEqual(lineValuesSorted, [marker, marker, null])
-    // if (equality === false) {
-    //   return false;
-    // } else {
-    //   var emptyCell = this.findEmptyCell(line);
-    // }
-    // return emptyCell;
-
-    // this.board.cells.click(function() {
-    //   if (self.filledSpaces.length === 9) {
-
-    //     $('#gameStatusMessage').html('Game over!');
-    //   }
-    // });
   }
 
   Game.prototype.whoGoesFirst = function(){
@@ -245,8 +238,8 @@ $( document ).ready(function() {
   }
 
 // Driver code -------------------------------------
-  var computer = new Player('O', 'human');
-  var player = new Player('X', 'human');
+  var computer = new Player('O', 'computer');
+  var player = new Player('X', 'computer');
   var board = new Board(computer, player);
   var game = new Game(player, computer, board);
 });

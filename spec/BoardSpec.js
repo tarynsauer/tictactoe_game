@@ -121,4 +121,44 @@ describe("Board", function() {
       expect(oppPlayer.marker).toEqual('O');
     });
   });
+
+  describe("#opponentMove", function() {
+    it("calls #playerMove", function() {
+      spyOn(Board.prototype, "playerMove");
+      game = new Game(player, computer, board);
+      expect(Board.prototype.playerMove).toHaveBeenCalled();
+    });
+
+    it("calls #computerMove", function() {
+      spyOn(Board.prototype, "computerMove");
+      computer = new Player('O', 'computer');
+      game = new Game(player, computer, board);
+      expect(Board.prototype.computerMove).toHaveBeenCalled();
+    });
+  });
+
+  describe("#checkGameStatus", function() {
+    it("calls #checkGameStatus", function() {
+      spyOn(Board.prototype, "checkGameStatus");
+      game = new Game(player, computer, board);
+      board.addMarker('X', '1A');
+      expect(Board.prototype.checkGameStatus).toHaveBeenCalled();
+    });
+
+    it("calls #checkGameStatus", function() {
+      game = new Game(player, computer, board);
+      board.addMarker('X', '1A');
+      board.addMarker('O', '2A');
+      board.addMarker('X', '3A');
+      board.addMarker('O', '1B');
+      board.addMarker('X', '2B');
+      board.addMarker('O', '3B');
+      board.addMarker('X', '1C');
+      board.addMarker('O', '2C');
+      board.addMarker('X', '3C');
+      var message = $('#gameStatusMessage').html();
+      expect(message).toEqual('Game over!');
+    });
+  });
+
 })

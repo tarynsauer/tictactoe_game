@@ -35,29 +35,6 @@ describe("Game", function() {
     });
   });
 
-  describe("#checkGameStatus", function() {
-    it("calls #checkGameStatus", function() {
-      spyOn(Game.prototype, "checkGameStatus");
-      game = new Game(player, computer, board);
-      expect(Game.prototype.checkGameStatus).toHaveBeenCalled();
-    });
-
-    it("calls #checkGameStatus", function() {
-      game = new Game(player, computer, board);
-      board.addMarker('X', '1A');
-      board.addMarker('O', '2A');
-      board.addMarker('X', '3A');
-      board.addMarker('O', '1B');
-      board.addMarker('X', '2B');
-      board.addMarker('O', '3B');
-      board.addMarker('X', '1C');
-      board.addMarker('O', '2C');
-      board.addMarker('X', '3C');
-      var message = $('#gameStatusMessage').html();
-      expect(message).toEqual('Game over!');
-    });
-  });
-
   describe("#whoGoesFirst", function() {
     it("calls #whoGoesFirst", function() {
       spyOn(Game.prototype, "whoGoesFirst");
