@@ -331,3 +331,7 @@ table td {
 .board {
   cursor: pointer;
 }
+
+.invisible {
+  opacity: 0;
+}

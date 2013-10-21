@@ -213,6 +213,8 @@ $( document ).ready(function() {
   Game.prototype.restartGameListener = function() {
     this.newGame.click(function() {
       location.reload();
+      this.newGame.addClass('invisible');
+      ('.settings').removeClass('invisible');
     });
   }
 
@@ -230,9 +232,9 @@ $( document ).ready(function() {
   Game.prototype.setUpPlayerByType = function(player) {
     // Trigger move logic based on player type
     if (player.playerType === 'computer') {
-      board.computerMove(player);
+      this.board.computerMove(player);
     } else {
-      board.playerMove(player);
+      this.board.playerMove(player);
     }
   }
 
@@ -248,8 +250,31 @@ $( document ).ready(function() {
   }
 
 // Driver code -------------------------------------
-  var computer = new Player('O', 'human');
-  var player = new Player('X', 'computer');
-  var board = new Board(computer, player);
-  var game = new Game(player, computer, board);
+
+  $('#startGame').click(function(event) {
+    event.preventDefault();
+    var playerOneMarker = $('#markerPlayerOne').val();
+    var playerTwoMarker = $('#markerPlayerTwo').val();
+    var playerOneType   = $('#player1Type').prop('checked');
+    var playerTwoType   = $('#player2Type').prop('checked');
+
+    if (playerOneType) {
+      playerOneType = 'computer';
+    } else {
+      playerOneType = 'human';
+    }
+    if (playerTwoType) {
+      playerTwoType = 'computer';
+    } else {
+      playerTwoType = 'human';
+    }
+
+   $('.settings').addClass('invisible');
+   $('#newGame').removeClass('invisible');
+   var playerOne = new Player(playerOneMarker, playerOneType);
+   var playerTwo = new Player(playerTwoMarker, playerTwoType);
+   var board = new Board(playerOne, playerTwo);
+   var game = new Game(playerOne, playerTwo, board);
+  });
+
 });
