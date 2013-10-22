@@ -222,7 +222,7 @@ $( document ).ready(function() {
     this.newGame.click(function() {
       location.reload();
       this.newGame.addClass('invisible');
-      ('.settings').removeClass('invisible');
+      ('.formElements').removeClass('invisible');
     });
   }
 
@@ -261,23 +261,30 @@ $( document ).ready(function() {
     var playerOneType   = $('#player1Type').prop('checked');
     var playerTwoType   = $('#player2Type').prop('checked');
 
-    if (playerOneType) {
-      playerOneType = 'computer';
+    if (playerOneMarker === playerTwoMarker) {
+      $('#error').html("Player markers can't be the same.");
     } else {
-      playerOneType = 'human';
-    }
-    if (playerTwoType) {
-      playerTwoType = 'computer';
-    } else {
-      playerTwoType = 'human';
+
+      if (playerOneType) {
+        playerOneType = 'computer';
+      } else {
+        playerOneType = 'human';
+      }
+      if (playerTwoType) {
+        playerTwoType = 'computer';
+      } else {
+        playerTwoType = 'human';
+      }
+
+     $('.formElements').addClass('invisible');
+     $('#newGame').removeClass('invisible');
+     var playerOne = new Player(playerOneMarker, playerOneType);
+     var playerTwo = new Player(playerTwoMarker, playerTwoType);
+     var board = new Board(playerOne, playerTwo);
+     var game = new Game(playerOne, playerTwo, board);
     }
 
-   $('.settings').addClass('invisible');
-   $('#newGame').removeClass('invisible');
-   var playerOne = new Player(playerOneMarker, playerOneType);
-   var playerTwo = new Player(playerTwoMarker, playerTwoType);
-   var board = new Board(playerOne, playerTwo);
-   var game = new Game(playerOne, playerTwo, board);
+
   });
 
 });

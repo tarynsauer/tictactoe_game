@@ -25,22 +25,26 @@
         <![endif]-->
       <div class="container">
 
-        <h1>Tic-Tac-Toe</h1>
-        <button id="newGame" class="invisible">New Game</button>
-        <p id="gameMessage"></p>
+        <header><h1 id="gameMessage">Let's play Tic-Tac-Toe!</h1></header>
+
+
       </div>
+
+      <div class="message"><p id="gameMessage"></p></div>
       <div class="settings">
-        <h2>Select game settings</h2>
-        <form action="#" id="settingsForm">
+        <h2 class="formElements">Select game settings</h2>
+
+        <form action="#" id="settingsForm" class="formElements">
+            <span id="error"></span>
           <p>Player one</p>
           <label for="markerPlayerOne">Marker:</label>
           <input type = "text"
                  maxlength="1"
                  name = "player1marker"
                  id = "markerPlayerOne"
-                 value = 'X' />
+                 value = 'X' class="marker" />
 
-          <label for="player1Type">Computer? <input type="checkbox" name="player1player1Type" id="player1Type">
+          <label for="player1Type">Computer? <input type="checkbox" name="player1Type" id="player1Type">
 
           <p>Player two</p>
           <label for "markerPlayerTwo">Marker:</label>
@@ -48,12 +52,17 @@
                  maxlength="1"
                  name = "player2marker"
                  id = "markerPlayerTwo"
-                 value = "O" />
+                 value = "O"
+                 class = "marker" />
 
-          <label for="player2Type">Computer? <input type="checkbox" name="player1player2Type" id="player2Type">
+          <label for="player2Type">Computer? <input type="checkbox" name="player2Type" id="player2Type">
 
           <input type="submit" value="Start game!" id="startGame">
         </form>
+
+      </div>
+      <div class="gameInProgress">
+        <button id="newGame" class="invisible">New Game</button>
       </div>
       <table class="tableBoard">
         <tr id="rowA">

@@ -308,27 +308,41 @@ textarea {
   * Custom styles
   */
 
-.container h1 {
-  text-align: center;
+
+body {
+  background-color: #EBEBEB;
 }
 
-table {
+header h1 {
+  margin: 0;
+  text-align: center;
+  color: white;
+  font-weight: normal;
+  font-size: 38px;
+  line-height: 72px;
+}
+
+header {
+  background-color: #464646;
+  height: 72px;
+  width: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.tableBoard {
   margin: 0 auto;
   position: absolute;
-  top: 100px;
-  left: 45%;
+  top: 120px;
+  left: 325px;
 }
 
-table td {
+.tableBoard td {
   border: 1px solid #464646;
-  height: 4em;
-  width: 4em;
+  height: 5em;
+  width: 5em;
   text-align: center;
-}
-
-.btn {
-  display: block;
-  margin: 20px auto;
 }
 
 .board {
@@ -343,4 +357,65 @@ button.invisible {
     background: transparent;
     border: none !important;
     font-size:0;
+}
+
+.settings {
+  position: absolute;
+  top: 72px;
+  left: 0px;
+  padding: 20px;
+  background-color: #C3E4ED;
+  height: 100%;
+  color: #1B1464;
+  width: 245px;
+}
+
+.settings input.marker {
+  width: 20px;
+  text-align: center;
+  margin-right: 10px;
+}
+
+.settings p {
+  font-weight: bold;
+}
+
+.settings h2 {
+  font-size: 20px;
+}
+.settings #startGame {
+  display: block;
+  margin-top: 20px;
+  padding: 5px;
+}
+
+#newGame, #startGame {
+  background-color:#79bbff;
+  border:1px solid #84bbf3;
+  color:#ffffff;
+  font-size:18px;
+  font-weight:bold;
+  height:40px;
+  width:125px;
+  text-align:center;
+  position: relative;
+  margin: 0 auto;
+}
+
+#newGame:hover, #startGame:hover {
+  background-color:#378de5;
+}
+#newGame:active, #startGame:active {
+  position:relative;
+  top:1px;
+}
+
+.gameInProgress {
+  display: block;
+  margin-top: 88px;
+  margin-left: 20px;
+}
+
+#error {
+  color: red;
 }
