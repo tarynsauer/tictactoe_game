@@ -18,6 +18,87 @@ $( document ).ready(function() {
     this.playerTwoMarker = playerTwo.marker;
   }
 
+   Board.prototype.getOpenCells = function(){
+    var result = [];
+    var cellSet = this.filledSpaces;
+    _.each(cellSet, function (cellValue, cellID) {
+      if (cellValue === null) {
+        result.push(cellID);
+      }
+    });
+    return result;
+  };
+
+  Board.prototype.getBestMove = function(openCellsArray, player){
+    var results = [];
+    var self = this;
+    _.each(openCellsArray, function (cellID, index) {
+      var value = self.calcScore(cellID, player);
+      results.push([value, cellID]);
+    });
+
+    var results = results.sort(function(a,b) {
+      return a[0] > b[0];
+    });
+
+    if (results.length > 0) {
+      var highestValue = results.pop();
+      return highestValue[1];
+    }
+  };
+
+
+  Board.prototype.calcScore = function(cellID, player){
+    var score = 0;
+    var currentBoard = this.filledSpaces;
+    var testBoard = $.extend(true, {}, currentBoard);
+    testBoard[cellID] = player.marker;
+    score += this.lineScore(testBoard, player, '1A', '2A', '3A');
+    score += this.lineScore(testBoard, player, '1B', '2B', '3B');
+    score += this.lineScore(testBoard, player, '1C', '2C', '3C');
+
+    score += this.lineScore(testBoard, player, '1A', '1B', '1C');
+    score += this.lineScore(testBoard, player, '2A', '2B', '2C');
+    score += this.lineScore(testBoard, player, '3A', '3B', '3C');
+
+    score += this.lineScore(testBoard, player, '1A', '2B', '3C');
+    score += this.lineScore(testBoard, player, '3A', '2B', '1C');
+    return score;
+  }
+
+  Board.prototype.equalityCheck = function(array1, array2){
+    var equalityResult = _.isEqual(array1, array2);
+    return equalityResult;
+  };
+
+  Board.prototype.lineScore = function(currentBoard, player, cell1, cell2, cell3){
+    var score = 0;
+    var marker = player.marker;
+    var opponent = this.opponent(player);
+    var otherMarker = opponent.marker;
+    var lineValues = _.pick(currentBoard, cell1, cell2, cell3);
+    var lineArray = _.values(lineValues);
+    lineArray = lineArray.sort();
+    var result1 = this.equalityCheck(lineArray, [marker, marker, marker]);
+    var result2 = this.equalityCheck(lineArray, [marker, marker, null]);
+    var result3 = this.equalityCheck(lineArray, [marker, null, null]);
+    var result4 = this.equalityCheck(lineArray, [otherMarker, otherMarker, null]);
+    var result5 = this.equalityCheck(lineArray, [otherMarker, null, null]);
+
+    if (result1) {
+      score += 100;
+    } else if (result2) {
+      score += 10;
+    } else if (result3) {
+      score += 1;
+    } else if (result4) {
+      score -= 10;
+    }else if (result5) {
+      score -= 1;
+    }
+    return score;
+  };
+
   Board.prototype.addMarker = function(marker, cellId){
     var currentValue = $( "#" + cellId ).html();
     if (_.isEmpty(currentValue)) {
@@ -32,75 +113,75 @@ $( document ).ready(function() {
 
   };
 
-  Board.prototype.findEmptyCell = function(cellSet) {
-    var result;
-    _.each(cellSet, function (cellValue, cellID) {
-      if (cellValue === null) {
-        result = cellID;
-      }
-    });
-    return result;
-  };
+  // Board.prototype.findEmptyCell = function(cellSet) {
+  //   var result;
+  //   _.each(cellSet, function (cellValue, cellID) {
+  //     if (cellValue === null) {
+  //       result = cellID;
+  //     }
+  //   });
+  //   return result;
+  // };
 
-  Board.prototype.checkLineForWin = function(marker, cell1, cell2, cell3){
-    var line = _.pick(this.filledSpaces, cell1, cell2, cell3);
-    var lineValues = _.values(line);
-    var lineValuesSorted = lineValues.sort();
-    var equality = _.isEqual(lineValuesSorted, [marker, marker, null])
-    if (equality) {
-      var emptyCell = this.findEmptyCell(line);
-    } else {
-      return false;
-    }
-    return emptyCell;
-  };
+  // Board.prototype.checkLineForWin = function(marker, cell1, cell2, cell3){
+  //   var line = _.pick(this.filledSpaces, cell1, cell2, cell3);
+  //   var lineValues = _.values(line);
+  //   var lineValuesSorted = lineValues.sort();
+  //   var equality = _.isEqual(lineValuesSorted, [marker, marker, null])
+  //   if (equality) {
+  //     var emptyCell = this.findEmptyCell(line);
+  //   } else {
+  //     return false;
+  //   }
+  //   return emptyCell;
+  // };
 
-  Board.prototype.findPotentialWin = function(marker){
-    // check if there is a potential winning move
-    var rowOne = this.checkLineForWin(marker, '1A', '2A', '3A');
-    var rowTwo = this.checkLineForWin(marker, '1B', '2B', '3B');
-    var rowThree = this.checkLineForWin(marker, '1C', '2C', '3C');
+  // Board.prototype.findPotentialWin = function(marker){
+  //   // check if there is a potential winning move
+  //   var rowOne = this.checkLineForWin(marker, '1A', '2A', '3A');
+  //   var rowTwo = this.checkLineForWin(marker, '1B', '2B', '3B');
+  //   var rowThree = this.checkLineForWin(marker, '1C', '2C', '3C');
 
-    var colOne = this.checkLineForWin(marker, '1A', '1B', '1C');
-    var colTwo = this.checkLineForWin(marker, '2A', '2B', '2C');
-    var colThree = this.checkLineForWin(marker, '3A', '3B', '3C');
+  //   var colOne = this.checkLineForWin(marker, '1A', '1B', '1C');
+  //   var colTwo = this.checkLineForWin(marker, '2A', '2B', '2C');
+  //   var colThree = this.checkLineForWin(marker, '3A', '3B', '3C');
 
-    var diagonalOne = this.checkLineForWin(marker, '1A', '2B', '3C');
-    var diagonalTwo = this.checkLineForWin(marker, '3A', '2B', '1C');
+  //   var diagonalOne = this.checkLineForWin(marker, '1A', '2B', '3C');
+  //   var diagonalTwo = this.checkLineForWin(marker, '3A', '2B', '1C');
 
-    var checkResults = _.compact([rowOne, rowTwo, rowThree,
-                                colOne, colTwo, colThree,
-                                diagonalOne, diagonalTwo]);
+  //   var checkResults = _.compact([rowOne, rowTwo, rowThree,
+  //                               colOne, colTwo, colThree,
+  //                               diagonalOne, diagonalTwo]);
 
-    if (checkResults.length > 0) {
-      return checkResults.pop();
-    } else {
-      return false;
-    }
+  //   if (checkResults.length > 0) {
+  //     return checkResults.pop();
+  //   } else {
+  //     return false;
+  //   }
 
-  };
+  // };
 
-  Board.prototype.checkForCorner = function(marker){
-    // take a corner if it's free
-    var corners = _.pick(this.filledSpaces, '1A', '1C', '3A', '3C');
-    var emptyCorner = this.findEmptyCell(corners);
-    if (_.isEmpty(emptyCorner)) {
-      return false;
-    } else {
-      return emptyCorner;
-    }
-  };
+  // Board.prototype.checkForCorner = function(marker){
+  //   // take a corner if it's free
+  //   var corners = _.pick(this.filledSpaces, '1A', '1C', '3A', '3C');
+  //   var emptyCorner = this.findEmptyCell(corners);
+  //   if (_.isEmpty(emptyCorner)) {
+  //     return false;
+  //   } else {
+  //     return emptyCorner;
+  //   }
+  // };
 
-  Board.prototype.checkForSide = function(marker){
-    // take a side position if it's free
-    var sides = _.pick(this.filledSpaces, '2A', '2C', '1B', '3B');
-    var emptySide = this.findEmptyCell(sides);
-    if (_.isEmpty(emptySide)) {
-      return false;
-    } else {
-      return emptySide;
-    }
-  };
+  // Board.prototype.checkForSide = function(marker){
+  //   // take a side position if it's free
+  //   var sides = _.pick(this.filledSpaces, '2A', '2C', '1B', '3B');
+  //   var emptySide = this.findEmptyCell(sides);
+  //   if (_.isEmpty(emptySide)) {
+  //     return false;
+  //   } else {
+  //     return emptySide;
+  //   }
+  // };
 
   Board.prototype.opponent = function(player) {
     if (player === this.playerOne) {
@@ -124,7 +205,8 @@ $( document ).ready(function() {
     if (player.turn === 1) {
       $( this.cells ).click(function(event) {
         var cellId = event.target.id;
-        var result = self.addMarker(playerMarker, cellId);
+        var playerMarker = player.marker;
+        var result = self.addMarker(playerMarker, cellId)
         if (result) {
           player.turn = 0;
           var opponent = self.opponent(player);
@@ -133,7 +215,6 @@ $( document ).ready(function() {
         } else {
           self.playerMove(player);
         }
-
       });
     }
   };
@@ -143,31 +224,17 @@ $( document ).ready(function() {
     setTimeout(function() {
       var computerMarker = computer.marker;
       var opponent = self.opponent(computer);
-      var opponentMarker = opponent.marker;
-      var win = self.findPotentialWin(computerMarker);
-      var block = self.findPotentialWin(opponentMarker);
-      var corner = self.checkForCorner(computerMarker);
-      var side = self.checkForSide(computerMarker);
 
       if (computer.turn === 1) {
-        console.log(computer.turn);
-        if (win != false) {
-          self.addMarker(computerMarker, win);
-        } else if (block != false) {
-           self.addMarker(computerMarker, block);
-        } else if (corner != false) {
-          self.addMarker(computerMarker, corner);
-        } else if (side != false) {
-          self.addMarker(computerMarker, side);
-        } else if (self.filledSpaces['2B'] === null) {
-          self.addMarker(computerMarker, '2B');
-        }
+        var openCellsArray = self.getOpenCells();
+        var cellID = self.getBestMove(openCellsArray, computer);
+        self.addMarker(computerMarker, cellID);
         computer.turn = 0;
         opponent.turn = 1;
         self.opponentMove(opponent);
       }
     }, 2000);
-  };
+  }
 
   Board.prototype.winnerCheck = function(marker, cell1, cell2, cell3) {
     var self = this;
