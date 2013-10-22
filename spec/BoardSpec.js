@@ -232,7 +232,7 @@ describe("Board", function() {
       board.addMarker('O', '2A');
       board.addMarker('X', '3A');
       var result = board.calcScore('2B', computer)
-      expect(result).toEqual(-9);
+      expect(result).toEqual(9);
     });
   });
 
@@ -288,7 +288,7 @@ describe("Board", function() {
       var currentBoard = board.filledSpaces;
       currentBoard['2B'] = 'O';
       var result = board.lineScore(currentBoard, computer, '1A', '2A', '3A')
-      expect(result).toEqual(-100);
+      expect(result).toEqual(-10);
     });
   });
 })
