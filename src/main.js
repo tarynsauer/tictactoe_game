@@ -150,6 +150,10 @@ $( document ).ready(function() {
     });
   };
 
+  Board.prototype.validCellCheck = function( cellID ) {
+
+  }
+
   Board.prototype.computerMove = function( computer ) {
     var self = this;
     setTimeout(function() {
@@ -164,7 +168,7 @@ $( document ).ready(function() {
         opponent.turn = 1;
         self.opponentMove(opponent);
       }
-    }, 2000);
+    }, 1500);
   }
 
   Board.prototype.deactivateBoard = function() {
