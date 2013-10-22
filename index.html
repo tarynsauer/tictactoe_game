@@ -24,15 +24,36 @@
             <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
         <![endif]-->
       <div class="container">
-        <button class="btn" id="newGame">New Game</button>
+
         <h1>Tic-Tac-Toe</h1>
-        <p id="gameStatusMessage"></p>
+        <button id="newGame" class="invisible">New Game</button>
+        <p id="gameMessage"></p>
       </div>
-      <div class="player1">
-        <h2>Settings</h2>
-        <h3>Player - X</h3>
-      <div class="player2">
-        <h3>Computer - O</h3>
+      <div class="settings">
+        <h2>Select game settings</h2>
+        <form action="#" id="settingsForm">
+          <p>Player one</p>
+          <label for="markerPlayerOne">Marker:</label>
+          <input type = "text"
+                 maxlength="1"
+                 name = "player1marker"
+                 id = "markerPlayerOne"
+                 value = 'X' />
+
+          <label for="player1Type">Computer? <input type="checkbox" name="player1player1Type" id="player1Type">
+
+          <p>Player two</p>
+          <label for "markerPlayerTwo">Marker:</label>
+          <input type = "text"
+                 maxlength="1"
+                 name = "player2marker"
+                 id = "markerPlayerTwo"
+                 value = "O" />
+
+          <label for="player2Type">Computer? <input type="checkbox" name="player1player2Type" id="player2Type">
+
+          <input type="submit" value="Start game!" id="startGame">
+        </form>
       </div>
       <table class="tableBoard">
         <tr id="rowA">

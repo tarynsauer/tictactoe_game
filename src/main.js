@@ -18,90 +18,99 @@ $( document ).ready(function() {
     this.playerTwoMarker = playerTwo.marker;
   }
 
-  Board.prototype.addMarker = function(marker, cellId){
-    $( "#" + cellId ).html(marker);
-    this.filledSpaces[cellId] = marker;
-    this.checkGameStatus(marker);
-  };
-
-  Board.prototype.findEmptyCell = function(cellSet) {
-    var result;
+   Board.prototype.getOpenCells = function(){
+    var result = [];
+    var cellSet = this.filledSpaces;
     _.each(cellSet, function (cellValue, cellID) {
       if (cellValue === null) {
-        result = cellID;
+        result.push(cellID);
       }
     });
     return result;
   };
 
-  Board.prototype.checkLineForWin = function(marker, cell1, cell2, cell3){
-    var line = _.pick(this.filledSpaces, cell1, cell2, cell3);
-    var lineValues = _.values(line);
-    var lineValuesSorted = lineValues.sort();
-    var equality = _.isEqual(lineValuesSorted, [marker, marker, null])
-    if (equality === false) {
-      return false;
-    } else {
-      var emptyCell = this.findEmptyCell(line);
-    }
-    return emptyCell;
-  };
+  Board.prototype.getBestMove = function(openCellsArray, player){
+    var results = [];
+    var self = this;
+    _.each(openCellsArray, function (cellID, index) {
+      var value = self.calcScore(cellID, player);
+      results.push([value, cellID]);
+    });
 
-  Board.prototype.findPotentialWin = function(marker){
-    // check if there is a potential winning move
-    var rowOne = this.checkLineForWin(marker, '1A', '2A', '3A');
-    var rowTwo = this.checkLineForWin(marker, '1B', '2B', '3B');
-    var rowThree = this.checkLineForWin(marker, '1C', '2C', '3C');
+    var results = results.sort(function(a,b) {
+      return a[0] > b[0];
+    });
 
-    var colOne = this.checkLineForWin(marker, '1A', '1B', '1C');
-    var colTwo = this.checkLineForWin(marker, '2A', '2B', '2C');
-    var colThree = this.checkLineForWin(marker, '3A', '3B', '3C');
-
-    var diagonalOne = this.checkLineForWin(marker, '1A', '2B', '3C');
-    var diagonalTwo = this.checkLineForWin(marker, '3A', '2B', '1C');
-
-    if (rowOne != false) {
-      return rowOne;
-    } else if (rowTwo != false) {
-      return rowTwo;
-    } else if (rowThree != false) {
-      return rowThree;
-    } else if (colOne != false) {
-      return colOne;
-    } else if (colTwo != false) {
-      return colTwo;
-    } else if (colThree != false) {
-      return colThree;
-    } else if (diagonalOne != false) {
-      return diagonalOne;
-    } else if (diagonalTwo != false) {
-      return diagonalTwo;
-    } else {
-      return false;
-    }
-
-  };
-
-  Board.prototype.checkForCorner = function(marker){
-    // take a corner if it's free
-    var corners = _.pick(this.filledSpaces, '1A', '1C', '3A', '3C');
-    var emptyCorner = this.findEmptyCell(corners);
-    if (_.isEmpty(emptyCorner)) {
-      return false;
-    } else {
-      return emptyCorner;
+    if (results.length > 0) {
+      var highestValue = results.pop();
+      return highestValue[1];
     }
   };
 
-  Board.prototype.checkForSide = function(marker){
-    // take a side position if it's free
-    var sides = _.pick(this.filledSpaces, '2A', '2C', '1B', '3B');
-    var emptySide = this.findEmptyCell(sides);
-    if (_.isEmpty(emptySide)) {
-      return false;
-    } else {
-      return emptySide;
+
+  Board.prototype.calcScore = function(cellID, player){
+    var score = 0;
+    var currentBoard = this.filledSpaces;
+    var testBoard = $.extend(true, {}, currentBoard);
+    testBoard[cellID] = player.marker;
+    score += this.lineScore(testBoard, player, '1A', '2A', '3A');
+    score += this.lineScore(testBoard, player, '1B', '2B', '3B');
+    score += this.lineScore(testBoard, player, '1C', '2C', '3C');
+
+    score += this.lineScore(testBoard, player, '1A', '1B', '1C');
+    score += this.lineScore(testBoard, player, '2A', '2B', '2C');
+    score += this.lineScore(testBoard, player, '3A', '3B', '3C');
+
+    score += this.lineScore(testBoard, player, '1A', '2B', '3C');
+    score += this.lineScore(testBoard, player, '3A', '2B', '1C');
+    return score;
+  }
+
+  Board.prototype.equalityCheck = function(array1, array2){
+    var equalityResult = _.isEqual(array1, array2);
+    return equalityResult;
+  };
+
+  Board.prototype.lineScore = function(currentBoard, player, cell1, cell2, cell3){
+    var score = 0;
+    var marker = player.marker;
+    var opponent = this.opponent(player);
+    var otherMarker = opponent.marker;
+    var lineValues = _.pick(currentBoard, cell1, cell2, cell3);
+    var lineArray = _.values(lineValues);
+    lineArray = lineArray.sort();
+    var result1 = this.equalityCheck(lineArray, [marker, marker, marker]);
+    var result2 = this.equalityCheck(lineArray, [marker, marker, null]);
+    var result3 = this.equalityCheck(lineArray, [marker, null, null]);
+    var result4 = this.equalityCheck(lineArray, [otherMarker, otherMarker, null]);
+    var result5 = this.equalityCheck(lineArray, [otherMarker, null, null]);
+
+    if (result1) {
+      score += 100;
+    } else if (result2) {
+      score += 10;
+    } else if (result3) {
+      score += 1;
+    } else if (result4) {
+      score -= 10;
+    }else if (result5) {
+      score -= 1;
     }
+    return score;
+  };
+
+  Board.prototype.addMarker = function(marker, cellId){
+    var currentValue = $( "#" + cellId ).html();
+    if (_.isEmpty(currentValue)) {
+      $( "#" + cellId ).html(marker);
+      $( "#" + cellId ).removeClass("board");
+      this.filledSpaces[cellId] = marker;
+      this.checkGameStatus(marker);
+      return true;
+    } else {
+      return false;
+    }
+
   };
 
   Board.prototype.opponent = function(player) {
@@ -123,55 +132,57 @@ $( document ).ready(function() {
   Board.prototype.playerMove = function( player ) {
     var playerMarker = player.marker;
     var self = this;
-    if (player.turn === 1) {
-      $( this.cells ).click(function(event) {
-        var cellId = event.target.id;
-        self.addMarker(playerMarker, cellId);
-        player.turn = 0;
-        var opponent = self.opponent(player);
-        opponent.turn = 1;
-        self.opponentMove(opponent);
-      });
-    }
+    $( this.cells ).click(function(event) {
+      var cellId = event.target.id;
+        if ($('#' + cellId).hasClass('board') && player.turn === 1) {
+        var playerMarker = player.marker;
+        var result = self.addMarker(playerMarker, cellId)
+        if (result) {
+          player.turn = 0;
+          var opponent = self.opponent(player);
+          opponent.turn = 1;
+          self.opponentMove(opponent);
+        } else {
+          self.playerMove(player);
+        }
+      }
+
+    });
   };
+
+  Board.prototype.validCellCheck = function( cellID ) {
+
+  }
 
   Board.prototype.computerMove = function( computer ) {
     var self = this;
     setTimeout(function() {
       var computerMarker = computer.marker;
       var opponent = self.opponent(computer);
-      var opponentMarker = self.opponent.marker;
-      var win = self.findPotentialWin(computerMarker);
-      var block = self.findPotentialWin(opponentMarker);
-      var corner = self.checkForCorner(computerMarker);
-      var side = self.checkForSide(computerMarker);
 
       if (computer.turn === 1) {
-        if (win != false) {
-          self.addMarker(computerMarker, win);
-        } else if (block != false) {
-          self.addMarker(computerMarker, block);
-        } else if (corner != false) {
-          self.addMarker(computerMarker, corner);
-        } else if (side != false) {
-          self.addMarker(computerMarker, side);
-        } else {
-          self.addMarker(computerMarker, '2B');
-        }
+        var openCellsArray = self.getOpenCells();
+        var cellID = self.getBestMove(openCellsArray, computer);
+        self.addMarker(computerMarker, cellID);
+        computer.turn = 0;
+        opponent.turn = 1;
+        self.opponentMove(opponent);
       }
-      computer.turn = 0;
-      opponent.turn = 1;
-      self.opponentMove(opponent);
-    }, 2000);
+    }, 1500);
+  }
+
+  Board.prototype.deactivateBoard = function() {
+    this.cells.removeClass('board');
   };
 
   Board.prototype.winnerCheck = function(marker, cell1, cell2, cell3) {
+    var self = this;
     var line = _.pick(this.filledSpaces, cell1, cell2, cell3);
     var lineValues = _.values(line);
     var equality = _.isEqual(lineValues, [marker, marker, marker])
     if (equality) {
-      // $('#gameStatusMessage').html('Game over!');
-      $('#gameStatusMessage').html('Game over! ' + marker + ' wins!');
+      $('#gameMessage').html('Game over! ' + marker + ' wins!');
+      self.deactivateBoard();
     }
   }
 
@@ -191,7 +202,8 @@ $( document ).ready(function() {
     var totalMarks = _.values(self.filledSpaces);
     totalMarks = _.compact(totalMarks);
     if (totalMarks.length === 9) {
-      $('#gameStatusMessage').html("Game over! It's a tie!");
+      $('#gameMessage').html("Game over! It's a tie!");
+      self.deactivateBoard();
     }
   }
 
@@ -209,6 +221,8 @@ $( document ).ready(function() {
   Game.prototype.restartGameListener = function() {
     this.newGame.click(function() {
       location.reload();
+      this.newGame.addClass('invisible');
+      ('.settings').removeClass('invisible');
     });
   }
 
@@ -216,7 +230,9 @@ $( document ).ready(function() {
     var playerGoesFirst = ['true','false'][Math.round(Math.random())];
     if (playerGoesFirst === 'true') {
       this.playerOne.turn = 1;
+      $('#gameMessage').html(this.playerOne.marker + " goes first!");
     } else {
+      $('#gameMessage').html(this.playerTwo.marker + " goes first!");
       this.playerTwo.turn = 1;
     }
   }
@@ -224,11 +240,10 @@ $( document ).ready(function() {
   Game.prototype.setUpPlayerByType = function(player) {
     // Trigger move logic based on player type
     if (player.playerType === 'computer') {
-      board.computerMove(player);
+      this.board.computerMove(player);
     } else {
-      board.playerMove(player);
+      this.board.playerMove(player);
     }
-
   }
 
   Game.prototype.startGame = function() {
@@ -237,14 +252,32 @@ $( document ).ready(function() {
     this.setUpPlayerByType(this.playerTwo);
   }
 
-  Game.prototype.endGame = function() {
-    this.playerOne.turn = 2;
-    this.playerTwo.turn = 2;
-  }
-
 // Driver code -------------------------------------
-  var computer = new Player('O', 'human');
-  var player = new Player('X', 'computer');
-  var board = new Board(computer, player);
-  var game = new Game(player, computer, board);
+
+  $('#startGame').click(function(event) {
+    event.preventDefault();
+    var playerOneMarker = $('#markerPlayerOne').val();
+    var playerTwoMarker = $('#markerPlayerTwo').val();
+    var playerOneType   = $('#player1Type').prop('checked');
+    var playerTwoType   = $('#player2Type').prop('checked');
+
+    if (playerOneType) {
+      playerOneType = 'computer';
+    } else {
+      playerOneType = 'human';
+    }
+    if (playerTwoType) {
+      playerTwoType = 'computer';
+    } else {
+      playerTwoType = 'human';
+    }
+
+   $('.settings').addClass('invisible');
+   $('#newGame').removeClass('invisible');
+   var playerOne = new Player(playerOneMarker, playerOneType);
+   var playerTwo = new Player(playerTwoMarker, playerTwoType);
+   var board = new Board(playerOne, playerTwo);
+   var game = new Game(playerOne, playerTwo, board);
+  });
+
 });
