@@ -113,76 +113,6 @@ $( document ).ready(function() {
 
   };
 
-  // Board.prototype.findEmptyCell = function(cellSet) {
-  //   var result;
-  //   _.each(cellSet, function (cellValue, cellID) {
-  //     if (cellValue === null) {
-  //       result = cellID;
-  //     }
-  //   });
-  //   return result;
-  // };
-
-  // Board.prototype.checkLineForWin = function(marker, cell1, cell2, cell3){
-  //   var line = _.pick(this.filledSpaces, cell1, cell2, cell3);
-  //   var lineValues = _.values(line);
-  //   var lineValuesSorted = lineValues.sort();
-  //   var equality = _.isEqual(lineValuesSorted, [marker, marker, null])
-  //   if (equality) {
-  //     var emptyCell = this.findEmptyCell(line);
-  //   } else {
-  //     return false;
-  //   }
-  //   return emptyCell;
-  // };
-
-  // Board.prototype.findPotentialWin = function(marker){
-  //   // check if there is a potential winning move
-  //   var rowOne = this.checkLineForWin(marker, '1A', '2A', '3A');
-  //   var rowTwo = this.checkLineForWin(marker, '1B', '2B', '3B');
-  //   var rowThree = this.checkLineForWin(marker, '1C', '2C', '3C');
-
-  //   var colOne = this.checkLineForWin(marker, '1A', '1B', '1C');
-  //   var colTwo = this.checkLineForWin(marker, '2A', '2B', '2C');
-  //   var colThree = this.checkLineForWin(marker, '3A', '3B', '3C');
-
-  //   var diagonalOne = this.checkLineForWin(marker, '1A', '2B', '3C');
-  //   var diagonalTwo = this.checkLineForWin(marker, '3A', '2B', '1C');
-
-  //   var checkResults = _.compact([rowOne, rowTwo, rowThree,
-  //                               colOne, colTwo, colThree,
-  //                               diagonalOne, diagonalTwo]);
-
-  //   if (checkResults.length > 0) {
-  //     return checkResults.pop();
-  //   } else {
-  //     return false;
-  //   }
-
-  // };
-
-  // Board.prototype.checkForCorner = function(marker){
-  //   // take a corner if it's free
-  //   var corners = _.pick(this.filledSpaces, '1A', '1C', '3A', '3C');
-  //   var emptyCorner = this.findEmptyCell(corners);
-  //   if (_.isEmpty(emptyCorner)) {
-  //     return false;
-  //   } else {
-  //     return emptyCorner;
-  //   }
-  // };
-
-  // Board.prototype.checkForSide = function(marker){
-  //   // take a side position if it's free
-  //   var sides = _.pick(this.filledSpaces, '2A', '2C', '1B', '3B');
-  //   var emptySide = this.findEmptyCell(sides);
-  //   if (_.isEmpty(emptySide)) {
-  //     return false;
-  //   } else {
-  //     return emptySide;
-  //   }
-  // };
-
   Board.prototype.opponent = function(player) {
     if (player === this.playerOne) {
       return this.playerTwo;
@@ -202,9 +132,9 @@ $( document ).ready(function() {
   Board.prototype.playerMove = function( player ) {
     var playerMarker = player.marker;
     var self = this;
-    if (player.turn === 1) {
-      $( this.cells ).click(function(event) {
-        var cellId = event.target.id;
+    $( this.cells ).click(function(event) {
+      var cellId = event.target.id;
+        if ($('#' + cellId).hasClass('board') && player.turn === 1) {
         var playerMarker = player.marker;
         var result = self.addMarker(playerMarker, cellId)
         if (result) {
@@ -215,8 +145,9 @@ $( document ).ready(function() {
         } else {
           self.playerMove(player);
         }
-      });
-    }
+      }
+
+    });
   };
 
   Board.prototype.computerMove = function( computer ) {
@@ -236,6 +167,10 @@ $( document ).ready(function() {
     }, 2000);
   }
 
+  Board.prototype.deactivateBoard = function() {
+    this.cells.removeClass('board');
+  };
+
   Board.prototype.winnerCheck = function(marker, cell1, cell2, cell3) {
     var self = this;
     var line = _.pick(this.filledSpaces, cell1, cell2, cell3);
@@ -243,6 +178,7 @@ $( document ).ready(function() {
     var equality = _.isEqual(lineValues, [marker, marker, marker])
     if (equality) {
       $('#gameMessage').html('Game over! ' + marker + ' wins!');
+      self.deactivateBoard();
     }
   }
 
@@ -263,6 +199,7 @@ $( document ).ready(function() {
     totalMarks = _.compact(totalMarks);
     if (totalMarks.length === 9) {
       $('#gameMessage').html("Game over! It's a tie!");
+      self.deactivateBoard();
     }
   }
 
@@ -309,11 +246,6 @@ $( document ).ready(function() {
     this.restartGameListener();
     this.setUpPlayerByType(this.playerOne);
     this.setUpPlayerByType(this.playerTwo);
-  }
-
-  Game.prototype.endGame = function() {
-    this.playerOne.turn = 2;
-    this.playerTwo.turn = 2;
   }
 
 // Driver code -------------------------------------
