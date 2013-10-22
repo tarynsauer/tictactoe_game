@@ -150,8 +150,20 @@ $( document ).ready(function() {
     });
   };
 
-  Board.prototype.validCellCheck = function( cellID ) {
-
+  Board.prototype.randomFirstMove = function( computer ) {
+    var cellIDs = _.keys(this.filledSpaces);
+    var randomCell = _.sample(cellIDs, 1);
+    var opponent = this.opponent(computer);
+    var self = this;
+    setTimeout(function() {
+      if (computer.turn === 1) {
+          self.addMarker(computer.marker, randomCell);
+          computer.turn = 0;
+          opponent.turn = 1;
+          self.opponentMove(opponent);
+        }
+      self.addMarker(computer.marker, randomCell);
+    }, 2000);
   }
 
   Board.prototype.computerMove = function( computer ) {
@@ -239,7 +251,9 @@ $( document ).ready(function() {
 
   Game.prototype.setUpPlayerByType = function(player) {
     // Trigger move logic based on player type
-    if (player.playerType === 'computer') {
+    if (player.playerType === 'computer' && player.turn === 1) {
+      this.board.randomFirstMove(player);
+    } else if (player.playerType === 'computer' && player.turn === 0) {
       this.board.computerMove(player);
     } else {
       this.board.playerMove(player);
