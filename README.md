@@ -40,6 +40,8 @@ This process uses a [Minimax](https://en.wikipedia.org/wiki/Minimax) search algo
 
 ## Technology used
 
+I used the following tools and technologies to make this web application:
+
 * [HTML5 Bloilerplate](http://html5boilerplate.com/)
 * [JQuery](http://jquery.com/)
 * [JavaScript Underscore](http://underscorejs.org/)
