@@ -58,12 +58,12 @@ describe("Board", function() {
     });
   });
 
-  describe("#checkGameStatus", function() {
-    it("calls #checkGameStatus", function() {
-      spyOn(Board.prototype, "checkGameStatus");
+  describe("#checkBoardStatus", function() {
+    it("calls #checkBoardStatus", function() {
+      spyOn(Board.prototype, "checkBoardStatus");
       game = new Game(player, computer, board);
       board.addMarker('X', '1A');
-      expect(Board.prototype.checkGameStatus).toHaveBeenCalled();
+      expect(Board.prototype.checkBoardStatus).toHaveBeenCalled();
     });
 
     it("calls #winnerCheck", function() {
@@ -73,15 +73,15 @@ describe("Board", function() {
       expect(Board.prototype.winnerCheck).toHaveBeenCalled();
     });
 
-    it("calls #checkGameStatus", function() {
+    it("calls #checkBoardStatus", function() {
       game = new Game(player, computer, board);
-      board.addMarker('X', '1A');
+      board.addMarker('O', '1A');
       board.addMarker('O', '2A');
       board.addMarker('X', '3A');
-      board.addMarker('O', '1B');
+      board.addMarker('X', '1B');
       board.addMarker('X', '2B');
       board.addMarker('O', '3B');
-      board.addMarker('X', '1C');
+      board.addMarker('O', '1C');
       board.addMarker('O', '2C');
       board.addMarker('X', '3C');
       var message = $('#gameMessage').html();
@@ -155,27 +155,26 @@ describe("Board", function() {
       board.addMarker('X', '3A');
       var openCellsArray = board.getOpenCells();
       var bestMove = board.getBestMove(openCellsArray, computer)
-      expect(bestMove).toEqual('2A');
+      expect(bestMove).toEqual('2B');
     });
 
-    it("returns the cellID of the best move", function() {
+    it("returns the cellID with the highest score", function() {
       game = new Game(player, computer, board);
       board.addMarker('X', '1A');
-      board.addMarker('O', '1B');
+      board.addMarker('O', '2B');
       board.addMarker('X', '3A');
       var openCellsArray = board.getOpenCells();
       var bestMove = board.getBestMove(openCellsArray, computer)
       expect(bestMove).toEqual('2A');
     });
 
-    it("returns the cellID of the best move", function() {
+    it("returns the cellID with the highest score", function() {
       game = new Game(player, computer, board);
-      board.addMarker('X', '2A');
-      board.addMarker('O', '3B');
-      board.addMarker('X', '3A');
+      board.addMarker('X', '1C');
+      board.addMarker('O', '2A');
       var openCellsArray = board.getOpenCells();
       var bestMove = board.getBestMove(openCellsArray, computer)
-      expect(bestMove).toEqual('1A');
+      expect(bestMove).toEqual('2B');
     });
 
     it("returns the cellID of the best move", function() {
@@ -200,6 +199,25 @@ describe("Board", function() {
       currentBoard['2B'] = 'O';
       var result = board.lineScore(currentBoard, computer, '1A', '2A', '3A')
       expect(result).toEqual(-10);
+    });
+  });
+
+  describe("#getOpenCells", function() {
+    it("returns the cellID of all open cells", function() {
+      game = new Game(player, computer, board);
+      board.addMarker('X', '1A');
+      board.addMarker('O', '1B');
+      board.addMarker('X', '3A');
+      var result = board.getOpenCells();
+      expect(result).toEqual(['2A', '2B', '3B', '1C', '2C', '3C']);
+    });
+  });
+
+  describe("#getHighScoreCell", function() {
+    it("returns the cellID with the highest score", function() {
+      game = new Game(player, computer, board);
+      var result = board.getHighScoreCell([[8, '2A'], [10, '2B'], [100, '3B'], [-100, '1C'], [-55, '2C']]);
+      expect(result).toEqual('3B');
     });
   });
 })

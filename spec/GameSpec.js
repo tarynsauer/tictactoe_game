@@ -27,11 +27,11 @@ describe("Game", function() {
     });
   });
 
-  describe("#restartGameListener", function() {
-    it("calls #restartGameListener", function() {
-      spyOn(Game.prototype, "restartGameListener");
+  describe("#gameRestartListener", function() {
+    it("calls #gameRestartListener", function() {
+      spyOn(Game.prototype, "gameRestartListener");
       game = new Game(player, computer, board);
-      expect(Game.prototype.restartGameListener).toHaveBeenCalled();
+      expect(Game.prototype.gameRestartListener).toHaveBeenCalled();
     });
   });
 
