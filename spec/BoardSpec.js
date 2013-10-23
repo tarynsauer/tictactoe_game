@@ -74,6 +74,13 @@ describe("Board", function() {
     });
 
     it("calls #checkBoardStatus", function() {
+      spyOn(Board.prototype, "checkBoardStatus");
+      game = new Game(player, computer, board);
+      board.addMarker('X', '1A');
+      expect(Board.prototype.checkBoardStatus).toHaveBeenCalled();
+    });
+
+    it("calls #checkBoardStatus", function() {
       game = new Game(player, computer, board);
       board.addMarker('O', '1A');
       board.addMarker('O', '2A');
@@ -235,28 +242,28 @@ describe("Board", function() {
     });
   });
 
-  // describe("#randomFirstMove", function() {
-  //   it("calls #addMarker", function() {
-  //     spyOn(Board.prototype, "addMarker");
-  //     game = new Game(player, computer, board);
-  //     computer.turn = 1;
-  //     board.randomFirstMove(computer);
-  //     expect(Board.prototype.addMarker).toHaveBeenCalled();
-  //   });
+  describe("#randomFirstMove", function() {
+    it("calls #addMarker", function() {
+      spyOn(Board.prototype, "addMarker");
+      computer.turn = 1;
+      game = new Game(player, computer, board);
+      board.randomFirstMove(computer);
+      expect(Board.prototype.addMarker).toHaveBeenCalled();
+    });
 
-  //   it("calls #opponentMove", function() {
-  //     spyOn(Board.prototype, "opponentMove");
-  //     game = new Game(player, computer, board);
-  //     computer.turn = 1
-  //     board.randomFirstMove(computer);
-  //     expect(Board.prototype.opponentMove).toHaveBeenCalled();
-  //   });
+    it("calls #opponentMove", function() {
+      spyOn(Board.prototype, "opponentMove");
+      game = new Game(player, computer, board);
+      computer.turn = 1
+      board.randomFirstMove(computer);
+      expect(Board.prototype.opponentMove).toHaveBeenCalled();
+    });
 
-  //   it("returns a cellID string", function() {
-  //     game = new Game(player, computer, board);
-  //     computer.turn = 1;
-  //     var result = board.randomFirstMove(computer);
-  //     expect(result).toBeString();
-  //   });
-  // });
+    it("returns a cellID string", function() {
+      game = new Game(player, computer, board);
+      computer.turn = 1;
+      var result = board.randomFirstMove(computer);
+      expect(result).toBeString();
+    });
+  });
 })

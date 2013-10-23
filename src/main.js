@@ -6,7 +6,12 @@ $( document ).ready(function() {
     this.playerType = playerType;
   };
 
-// Board -------------------------------------
+// Line ---------------------------------------
+  Line = function (cell1, cell2, cell3) {
+    this.lineCells = [cell1, cell2, cell3];
+  };
+
+// Board --------------------------------------
   Board = function (playerOne, playerTwo) {
     this.filledSpaces = { "1A": null, "2A": null, "3A": null,
                           "1B": null, "2B": null, "3B": null,
@@ -16,9 +21,17 @@ $( document ).ready(function() {
     this.playerTwo = playerTwo;
     this.playerOneMarker = playerOne.marker;
     this.playerTwoMarker = playerTwo.marker;
+    this.lines = [ new Line("1A", "2A", "3A"),
+                   new Line ("1B", "2B", "3B"),
+                   new Line ("1C", "2C", "3C"),
+                   new Line ("1A", "1B", "1C"),
+                   new Line ("2A", "2B", "2C"),
+                   new Line ("3A", "3B", "3C"),
+                   new Line ("1A", "2B", "3C"),
+                   new Line ("1C", "2B", "3A"), ]
   };
 
-   Board.prototype.getOpenCells = function(){
+  Board.prototype.getOpenCells = function(){
     var openCells = [];
     var currentCells = this.filledSpaces;
     _.each(currentCells, function (cellValue, cellID) {
@@ -47,27 +60,7 @@ $( document ).ready(function() {
       var score = self.calcScore(cellID, player);
       cellScores.push([score, cellID]);
     });
-
     return self.getHighScoreCell(cellScores);
-  };
-
-
-  Board.prototype.calcScore = function(cellID, player){
-    var score = 0;
-    var currentBoard = this.filledSpaces;
-    var boardCopy = $.extend(true, {}, currentBoard);
-    boardCopy[cellID] = player.marker;
-    score += this.lineScore(boardCopy, player, '1A', '2A', '3A');
-    score += this.lineScore(boardCopy, player, '1B', '2B', '3B');
-    score += this.lineScore(boardCopy, player, '1C', '2C', '3C');
-
-    score += this.lineScore(boardCopy, player, '1A', '1B', '1C');
-    score += this.lineScore(boardCopy, player, '2A', '2B', '2C');
-    score += this.lineScore(boardCopy, player, '3A', '3B', '3C');
-
-    score += this.lineScore(boardCopy, player, '1A', '2B', '3C');
-    score += this.lineScore(boardCopy, player, '3A', '2B', '1C');
-    return score;
   };
 
   Board.prototype.equalityCheck = function(array1, array2){
@@ -75,14 +68,20 @@ $( document ).ready(function() {
     return equalityBoolean;
   };
 
-  Board.prototype.lineScore = function(board, player, cell1, cell2, cell3){
+  Board.prototype.lineValuesArray = function(line, board){
+    // gets board markers for each line
+    var lineValues = _.pick(board, line.lineCells[0], line.lineCells[1], line.lineCells[2]);
+    var lineArray = _.values(lineValues);
+    return lineArray.sort();
+  };
+
+  Board.prototype.lineScore = function(board, player, line){
+    // returns score for a given line
     var score = 0;
     var marker = player.marker;
     var opponent = this.opponent(player);
     var otherMarker = opponent.marker;
-    var lineValues = _.pick(board, cell1, cell2, cell3);
-    var lineArray = _.values(lineValues);
-    var sortedArray = lineArray.sort();
+    var sortedArray = this.lineValuesArray(line, board);
     var result1 = this.equalityCheck(sortedArray, [marker, marker, marker]);
     var result2 = this.equalityCheck(sortedArray, [marker, marker, null]);
     var result3 = this.equalityCheck(sortedArray, [marker, null, null]);
@@ -100,6 +99,19 @@ $( document ).ready(function() {
     }else if (result5) {
       score -= 1;
     }
+    return score;
+  };
+
+  Board.prototype.calcScore = function(cellID, player){
+    var self = this;
+    var score = 0;
+    var currentBoard = self.filledSpaces;
+    var boardCopy = $.extend(true, {}, currentBoard);
+    boardCopy[cellID] = player.marker;
+
+    _.each(self.lines, function (line) {
+      score += self.lineScore(boardCopy, player, line)
+    });
     return score;
   };
 
@@ -149,7 +161,6 @@ $( document ).ready(function() {
           self.playerMove(player);
         }
       }
-
     });
   };
 
@@ -189,9 +200,9 @@ $( document ).ready(function() {
     this.squares.removeClass('board');
   };
 
-  Board.prototype.winnerCheck = function(marker, cell1, cell2, cell3) {
+  Board.prototype.winnerCheck = function(marker, cellsArray) {
     var self = this;
-    var line = _.pick(this.filledSpaces, cell1, cell2, cell3);
+    var line = _.pick(this.filledSpaces, cellsArray[0], cellsArray[1], cellsArray[2]);
     var lineValues = _.values(line);
     var equality = self.equalityCheck(lineValues, [marker, marker, marker])
     if (equality) {
@@ -203,16 +214,10 @@ $( document ).ready(function() {
   };
 
   Board.prototype.checkBoardStatus = function(marker){
-    this.winnerCheck(marker, '1A', '2A', '3A');
-    this.winnerCheck(marker, '1B', '2B', '3B');
-    this.winnerCheck(marker, '1C', '2C', '3C');
-
-    this.winnerCheck(marker, '1A', '1B', '1C');
-    this.winnerCheck(marker, '2A', '2B', '2C');
-    this.winnerCheck(marker, '3A', '3B', '3C');
-
-    this.winnerCheck(marker, '1A', '2B', '3C');
-    this.winnerCheck(marker, '3A', '2B', '1C');
+    var self = this;
+    _.each(self.lines, function (line) {
+      self.winnerCheck(marker, line.lineCells);
+    });
   };
 
   Board.prototype.checkForTie = function(){
