@@ -38,88 +38,6 @@ describe("Board", function() {
 
   });
 
-  // describe("#checkLineForWin", function() {
-  //   it("fails to find a winning opportunity", function() {
-  //     board.addMarker('X', '2C');
-  //     board.addMarker('O', '3C');
-  //     board.addMarker('X', '1C');
-  //     var trioResult = board.checkLineForWin(board.playerTwoMarker, '1C', '2C', '3C');
-  //     expect(trioResult).toEqual(false);
-  //   });
-
-  //   it("finds a winning opportunity", function() {
-  //     board.addMarker('X', '2C');
-  //     board.addMarker('X', '1C');
-  //     var trioResult = board.checkLineForWin(board.playerTwoMarker, '1C', '2C', '3C');
-  //     expect(trioResult).toEqual('3C');
-  //   });
-
-  //   it("finds a winning opportunity", function() {
-  //     board.addMarker('O', '2B');
-  //     board.addMarker('X', '1C');
-  //     board.addMarker('O', '3B');
-  //     board.addMarker('X', '3A');
-  //     board.addMarker('O', '3C');
-  //     var trioResult = board.checkLineForWin(board.playerOneMarker, '1B', '2B', '3B');
-  //     expect(trioResult).toEqual('1B');
-  //   });
-  // });
-
-  // describe("#findPotentialWin", function() {
-  //   it("returns false if there is no winning move", function() {
-  //     board.addMarker('X', '2C');
-  //     board.addMarker('O', '3C');
-  //     board.addMarker('O', '1C');
-  //     var result = board.findPotentialWin(board.playerOneMarker);
-  //     expect(result).toEqual(false);
-  //   });
-
-  //   it("finds a winning opportunity", function() {
-  //     board.addMarker('O', '2C');
-  //     board.addMarker('O', '1C');
-  //     var result = board.findPotentialWin(board.playerOneMarker);
-  //     expect(result).toEqual('3C');
-  //   });
-  // });
-
-  // describe("#checkForCorner", function() {
-  //   it("returns coordinate of open corner", function() {
-  //     board.addMarker('X', '1A');
-  //     board.addMarker('O', '3A');
-  //     // board.addMarker('X', '3C');
-  //     var result = board.checkForCorner(board.playerOneMarker);
-  //     expect(result).toEqual('3C');
-  //   });
-
-  //   it("returns false if no open corners", function() {
-  //     board.addMarker('X', '1A');
-  //     board.addMarker('O', '3A');
-  //     board.addMarker('X', '1C');
-  //     board.addMarker('O', '3C');
-  //     var result = board.checkForCorner(board.playerOneMarker);
-  //     expect(result).toEqual(false);
-  //   });
-  // });
-
-  // describe("#checkForSide", function() {
-  //   it("returns coordinate of open side", function() {
-  //     board.addMarker('X', '2A');
-  //     board.addMarker('O', '2C');
-  //     board.addMarker('X', '1B');
-  //     var result = board.checkForSide(board.playerOneMarker);
-  //     expect(result).toEqual('3B');
-  //   });
-
-  //   it("returns false if no open sides", function() {
-  //     board.addMarker('X', '2A');
-  //     board.addMarker('O', '2C');
-  //     board.addMarker('X', '1B');
-  //     board.addMarker('O', '3B');
-  //     var result = board.checkForSide(board.playerOneMarker);
-  //     expect(result).toEqual(false);
-  //   });
-  // });
-
   describe("#opponent", function() {
     it("returns opponent player X", function() {
       var oppPlayer = board.opponent(computer);
@@ -137,13 +55,6 @@ describe("Board", function() {
       spyOn(Board.prototype, "playerMove");
       game = new Game(player, computer, board);
       expect(Board.prototype.playerMove).toHaveBeenCalled();
-    });
-
-    it("calls #computerMove", function() {
-      spyOn(Board.prototype, "computerMove");
-      computer = new Player('O', 'computer');
-      game = new Game(player, computer, board);
-      expect(Board.prototype.computerMove).toHaveBeenCalled();
     });
   });
 
