@@ -38,88 +38,6 @@ describe("Board", function() {
 
   });
 
-  // describe("#checkLineForWin", function() {
-  //   it("fails to find a winning opportunity", function() {
-  //     board.addMarker('X', '2C');
-  //     board.addMarker('O', '3C');
-  //     board.addMarker('X', '1C');
-  //     var trioResult = board.checkLineForWin(board.playerTwoMarker, '1C', '2C', '3C');
-  //     expect(trioResult).toEqual(false);
-  //   });
-
-  //   it("finds a winning opportunity", function() {
-  //     board.addMarker('X', '2C');
-  //     board.addMarker('X', '1C');
-  //     var trioResult = board.checkLineForWin(board.playerTwoMarker, '1C', '2C', '3C');
-  //     expect(trioResult).toEqual('3C');
-  //   });
-
-  //   it("finds a winning opportunity", function() {
-  //     board.addMarker('O', '2B');
-  //     board.addMarker('X', '1C');
-  //     board.addMarker('O', '3B');
-  //     board.addMarker('X', '3A');
-  //     board.addMarker('O', '3C');
-  //     var trioResult = board.checkLineForWin(board.playerOneMarker, '1B', '2B', '3B');
-  //     expect(trioResult).toEqual('1B');
-  //   });
-  // });
-
-  // describe("#findPotentialWin", function() {
-  //   it("returns false if there is no winning move", function() {
-  //     board.addMarker('X', '2C');
-  //     board.addMarker('O', '3C');
-  //     board.addMarker('O', '1C');
-  //     var result = board.findPotentialWin(board.playerOneMarker);
-  //     expect(result).toEqual(false);
-  //   });
-
-  //   it("finds a winning opportunity", function() {
-  //     board.addMarker('O', '2C');
-  //     board.addMarker('O', '1C');
-  //     var result = board.findPotentialWin(board.playerOneMarker);
-  //     expect(result).toEqual('3C');
-  //   });
-  // });
-
-  // describe("#checkForCorner", function() {
-  //   it("returns coordinate of open corner", function() {
-  //     board.addMarker('X', '1A');
-  //     board.addMarker('O', '3A');
-  //     // board.addMarker('X', '3C');
-  //     var result = board.checkForCorner(board.playerOneMarker);
-  //     expect(result).toEqual('3C');
-  //   });
-
-  //   it("returns false if no open corners", function() {
-  //     board.addMarker('X', '1A');
-  //     board.addMarker('O', '3A');
-  //     board.addMarker('X', '1C');
-  //     board.addMarker('O', '3C');
-  //     var result = board.checkForCorner(board.playerOneMarker);
-  //     expect(result).toEqual(false);
-  //   });
-  // });
-
-  // describe("#checkForSide", function() {
-  //   it("returns coordinate of open side", function() {
-  //     board.addMarker('X', '2A');
-  //     board.addMarker('O', '2C');
-  //     board.addMarker('X', '1B');
-  //     var result = board.checkForSide(board.playerOneMarker);
-  //     expect(result).toEqual('3B');
-  //   });
-
-  //   it("returns false if no open sides", function() {
-  //     board.addMarker('X', '2A');
-  //     board.addMarker('O', '2C');
-  //     board.addMarker('X', '1B');
-  //     board.addMarker('O', '3B');
-  //     var result = board.checkForSide(board.playerOneMarker);
-  //     expect(result).toEqual(false);
-  //   });
-  // });
-
   describe("#opponent", function() {
     it("returns opponent player X", function() {
       var oppPlayer = board.opponent(computer);
@@ -138,21 +56,14 @@ describe("Board", function() {
       game = new Game(player, computer, board);
       expect(Board.prototype.playerMove).toHaveBeenCalled();
     });
-
-    it("calls #computerMove", function() {
-      spyOn(Board.prototype, "computerMove");
-      computer = new Player('O', 'computer');
-      game = new Game(player, computer, board);
-      expect(Board.prototype.computerMove).toHaveBeenCalled();
-    });
   });
 
-  describe("#checkGameStatus", function() {
-    it("calls #checkGameStatus", function() {
-      spyOn(Board.prototype, "checkGameStatus");
+  describe("#checkBoardStatus", function() {
+    it("calls #checkBoardStatus", function() {
+      spyOn(Board.prototype, "checkBoardStatus");
       game = new Game(player, computer, board);
       board.addMarker('X', '1A');
-      expect(Board.prototype.checkGameStatus).toHaveBeenCalled();
+      expect(Board.prototype.checkBoardStatus).toHaveBeenCalled();
     });
 
     it("calls #winnerCheck", function() {
@@ -162,15 +73,15 @@ describe("Board", function() {
       expect(Board.prototype.winnerCheck).toHaveBeenCalled();
     });
 
-    it("calls #checkGameStatus", function() {
+    it("calls #checkBoardStatus", function() {
       game = new Game(player, computer, board);
-      board.addMarker('X', '1A');
+      board.addMarker('O', '1A');
       board.addMarker('O', '2A');
       board.addMarker('X', '3A');
-      board.addMarker('O', '1B');
+      board.addMarker('X', '1B');
       board.addMarker('X', '2B');
       board.addMarker('O', '3B');
-      board.addMarker('X', '1C');
+      board.addMarker('O', '1C');
       board.addMarker('O', '2C');
       board.addMarker('X', '3C');
       var message = $('#gameMessage').html();
@@ -244,27 +155,26 @@ describe("Board", function() {
       board.addMarker('X', '3A');
       var openCellsArray = board.getOpenCells();
       var bestMove = board.getBestMove(openCellsArray, computer)
-      expect(bestMove).toEqual('2A');
+      expect(bestMove).toEqual('2B');
     });
 
-    it("returns the cellID of the best move", function() {
+    it("returns the cellID with the highest score", function() {
       game = new Game(player, computer, board);
       board.addMarker('X', '1A');
-      board.addMarker('O', '1B');
+      board.addMarker('O', '2B');
       board.addMarker('X', '3A');
       var openCellsArray = board.getOpenCells();
       var bestMove = board.getBestMove(openCellsArray, computer)
       expect(bestMove).toEqual('2A');
     });
 
-    it("returns the cellID of the best move", function() {
+    it("returns the cellID with the highest score", function() {
       game = new Game(player, computer, board);
-      board.addMarker('X', '2A');
-      board.addMarker('O', '3B');
-      board.addMarker('X', '3A');
+      board.addMarker('X', '1C');
+      board.addMarker('O', '2A');
       var openCellsArray = board.getOpenCells();
       var bestMove = board.getBestMove(openCellsArray, computer)
-      expect(bestMove).toEqual('1A');
+      expect(bestMove).toEqual('2B');
     });
 
     it("returns the cellID of the best move", function() {
@@ -289,6 +199,61 @@ describe("Board", function() {
       currentBoard['2B'] = 'O';
       var result = board.lineScore(currentBoard, computer, '1A', '2A', '3A')
       expect(result).toEqual(-10);
+    });
+  });
+
+  describe("#getOpenCells", function() {
+    it("returns the cellID of all open cells", function() {
+      game = new Game(player, computer, board);
+      board.addMarker('X', '1A');
+      board.addMarker('O', '1B');
+      board.addMarker('X', '3A');
+      var result = board.getOpenCells();
+      expect(result).toEqual(['2A', '2B', '3B', '1C', '2C', '3C']);
+    });
+  });
+
+  describe("#getHighScoreCell", function() {
+    it("returns the cellID with the highest score", function() {
+      game = new Game(player, computer, board);
+      var result = board.getHighScoreCell([[8, '2A'], [10, '2B'], [100, '3B'], [-100, '1C'], [-55, '2C']]);
+      expect(result).toEqual('3B');
+    });
+  });
+
+  describe("#equalityCheck", function() {
+    it("returns true if arrays are the same", function() {
+      game = new Game(player, computer, board);
+      var result = board.equalityCheck(['X', 'X', null], ['X', 'X', null]);
+      expect(result).toBe(true);
+    });
+
+    it("returns false if arrays are not the same", function() {
+      game = new Game(player, computer, board);
+      var result = board.equalityCheck(['X', 'X', null], ['X', null, null]);
+      expect(result).toBe(false);
+    });
+  });
+
+  describe("#randomFirstMove", function() {
+    it("calls #addMarker", function() {
+      spyOn(Board.prototype, "addMarker");
+      game = new Game(player, computer, board);
+      board.randomFirstMove(computer);
+      expect(Board.prototype.addMarker).toHaveBeenCalled();
+    });
+
+    it("calls #opponentMove", function() {
+      spyOn(Board.prototype, "opponentMove");
+      game = new Game(player, computer, board);
+      board.randomFirstMove(computer);
+      expect(Board.prototype.opponentMove).toHaveBeenCalled();
+    });
+
+    it("returns a cellID string", function() {
+      game = new Game(player, computer, board);
+      var result = board.randomFirstMove(computer);
+      expect(result).toBeString();
     });
   });
 })
