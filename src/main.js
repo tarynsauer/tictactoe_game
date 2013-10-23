@@ -193,26 +193,30 @@ $( document ).ready(function() {
     var self = this;
     var line = _.pick(this.filledSpaces, cell1, cell2, cell3);
     var lineValues = _.values(line);
-    var equality = _.isEqual(lineValues, [marker, marker, marker])
+    var equality = self.equalityCheck(lineValues, [marker, marker, marker])
     if (equality) {
       $('#gameMessage').html('Game over! ' + marker + ' wins!');
       self.deactivateBoard();
+    } else {
+      self.checkForTie();
     }
   };
 
   Board.prototype.checkBoardStatus = function(marker){
+    this.winnerCheck(marker, '1A', '2A', '3A');
+    this.winnerCheck(marker, '1B', '2B', '3B');
+    this.winnerCheck(marker, '1C', '2C', '3C');
+
+    this.winnerCheck(marker, '1A', '1B', '1C');
+    this.winnerCheck(marker, '2A', '2B', '2C');
+    this.winnerCheck(marker, '3A', '3B', '3C');
+
+    this.winnerCheck(marker, '1A', '2B', '3C');
+    this.winnerCheck(marker, '3A', '2B', '1C');
+  };
+
+  Board.prototype.checkForTie = function(){
     var self = this;
-    self.winnerCheck(marker, '1A', '2A', '3A');
-    self.winnerCheck(marker, '1B', '2B', '3B');
-    self.winnerCheck(marker, '1C', '2C', '3C');
-
-    self.winnerCheck(marker, '1A', '1B', '1C');
-    self.winnerCheck(marker, '2A', '2B', '2C');
-    self.winnerCheck(marker, '3A', '3B', '3C');
-
-    self.winnerCheck(marker, '1A', '2B', '3C');
-    self.winnerCheck(marker, '3A', '2B', '1C');
-
     var totalMarks = _.values(self.filledSpaces);
     totalMarks = _.compact(totalMarks);
     if (totalMarks.length === 9) {
