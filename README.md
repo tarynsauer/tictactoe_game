@@ -5,8 +5,8 @@ This tic-tac-toe game allows for comptuer vs. computer, human vs. computer, and 
 ##### Table of Contents  
 [Getting started](#getting-started)  
 [Playing the game](#playing-the-game)  
-[AI algorithm](#ai-algorithm)
-[Technology used](#technology-used)
+[AI algorithm](#ai-algorithm)  
+[Technology used](#technology-used)  
 [Notes](#notes)
 
 ## Getting started
