@@ -220,4 +220,40 @@ describe("Board", function() {
       expect(result).toEqual('3B');
     });
   });
+
+  describe("#equalityCheck", function() {
+    it("returns true if arrays are the same", function() {
+      game = new Game(player, computer, board);
+      var result = board.equalityCheck(['X', 'X', null], ['X', 'X', null]);
+      expect(result).toBe(true);
+    });
+
+    it("returns false if arrays are not the same", function() {
+      game = new Game(player, computer, board);
+      var result = board.equalityCheck(['X', 'X', null], ['X', null, null]);
+      expect(result).toBe(false);
+    });
+  });
+
+  describe("#randomFirstMove", function() {
+    it("calls #addMarker", function() {
+      spyOn(Board.prototype, "addMarker");
+      game = new Game(player, computer, board);
+      board.randomFirstMove(computer);
+      expect(Board.prototype.addMarker).toHaveBeenCalled();
+    });
+
+    it("calls #opponentMove", function() {
+      spyOn(Board.prototype, "opponentMove");
+      game = new Game(player, computer, board);
+      board.randomFirstMove(computer);
+      expect(Board.prototype.opponentMove).toHaveBeenCalled();
+    });
+
+    it("returns a cellID string", function() {
+      game = new Game(player, computer, board);
+      var result = board.randomFirstMove(computer);
+      expect(result).toBeString();
+    });
+  });
 })
