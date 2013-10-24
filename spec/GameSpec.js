@@ -17,7 +17,7 @@ describe('Game', function() {
     $('tr#rowC').affix('td#3B.board');
     $('tr#rowC').affix('td#3C.board');
     $('body').affix('p#gameStatusMessage');
-    game = new Game(player, computer, board);
+    game = new Game(board);
   });
 
   describe('create new game',function() {
@@ -43,25 +43,25 @@ describe('Game', function() {
 
     it('calls #gameRestartListener', function() {
       spyOn(Game.prototype, 'gameRestartListener');
-      game = new Game(player, computer, board);
+      game = new Game(board);
       expect(Game.prototype.gameRestartListener).toHaveBeenCalled();
     });
 
     it('calls #startGame', function() {
       spyOn(Game.prototype, 'startGame');
-      game = new Game(player, computer, board);
+      game = new Game(board);
       expect(Game.prototype.startGame).toHaveBeenCalled();
     });
 
     it('calls #whoGoesFirst', function() {
       spyOn(Game.prototype, 'whoGoesFirst');
-      game = new Game(player, computer, board);
+      game = new Game(board);
       expect(Game.prototype.whoGoesFirst).toHaveBeenCalled();
     });
 
     it('calls #setUpPlayerByType', function() {
       spyOn(Game.prototype, 'setUpPlayerByType');
-      game = new Game(player, computer, board);
+      game = new Game(board);
       expect(Game.prototype.setUpPlayerByType).toHaveBeenCalled();
     });
   });

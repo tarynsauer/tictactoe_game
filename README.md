@@ -2,12 +2,12 @@
 
 This tic-tac-toe game allows for comptuer vs. computer, human vs. computer, and human vs. human matchups. The computer is unbeatable, and all computer vs. computer matchups result in a tie. You can play the game in any Web browser.
 
-##### Table of Contents  
-[Getting started](#getting-started)  
-[Playing the game](#playing-the-game)  
-[AI algorithm](#ai-algorithm)  
-[Technology used](#technology-used)  
-[Notes](#notes)
+##### Table of Contents
+[Getting started](#getting-started)
+[Playing the game](#playing-the-game)
+[AI algorithm](#ai-algorithm)
+[Technology used](#technology-used)
+[Structure](#structure)
 
 ## Getting started
 
@@ -55,7 +55,14 @@ I used the following tools and technologies to make this web application:
 * [Jasmine](http://pivotal.github.io/jasmine/)
 * [Jasmine fixture](https://github.com/searls/jasmine-fixture)
 
-### File structure
+## Structure
+
+The application source file ```/src/tictactoe.js``` contains the following classes:
+
+* **Player** - defines the player object, which has a marker string, turn vlaue, and player type ('computer' or 'human').
+* **Line** - defines a winning line, which includes three cell string identifiers. There are eight possible winning lines in tic-tac-toe.
+* **Board** - defines the board variables for a given game, including lines and players. This class defines the AI logic, player move actions, and monitors the status of the game (win or tie).
+* **Game** - sets up new games. This class starts new games, determines which player goes first, and resets the game settings panel.
 
 ### Spec
 
@@ -64,5 +71,3 @@ To run the Jasmine specs, open the following file in a web browser:
 SpecRunner.html
 ```
 Refresh the browser page to re-run the specs.
-
-## Notes
