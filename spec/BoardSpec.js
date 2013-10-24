@@ -1,10 +1,10 @@
 describe('Board', function() {
 
   beforeEach(function() {
-    computer = new Player('O', 'human');
+    computer = new Player('O', 'computer');
     player = new Player('X', 'human');
     board = new Board(computer,player);
-    game = new Game(computer, player, board);
+    game = new Game(board);
     $('body').affix('h1#gameMessage')
     $('body').affix('table.tableBoard tr#rowA')
     $('tr#rowA').affix('td#1A.board')
@@ -79,6 +79,77 @@ describe('Board', function() {
 
   });
 
+  describe('#playerMove', function() {
+    it('calls #addMarker', function() {
+      spyOn(board, "playerMove");
+      game = new Game(board);
+      computer.turn = 0;
+      player.turn = 1;
+      $('#1A').trigger('click');
+      expect(board.playerMove).toHaveBeenCalled();
+    });
+
+    // it('calls #opponent', function() {
+    //   spyOn(board, "opponent");
+    //   game = new Game(board);
+    //   computer.turn = 0;
+    //   player.turn = 1;
+    //   board.playerMove(player);
+    //   expect(board.opponent).toHaveBeenCalled();
+    // });
+
+    // it('calls #opponentMove', function() {
+    //   spyOn(board, "opponentMove");
+    //   game = new Game(board);
+    //   computer.turn = 0;
+    //   player.turn = 1;
+    //   board.playerMove(player);
+    //   expect(board.opponentMove).toHaveBeenCalled();
+    // });
+
+    // it('changes assigns player turn to 0', function() {
+    //   spyOn(board, "opponentMove");
+    //   game = new Game(board);
+    //   computer.turn = 0;
+    //   player.turn = 1;
+    //   board.playerMove(player);
+    //   expect(player.turn).toEqual(0);
+    // });
+
+    it('assigns opponent turn value to 1', function() {
+      spyOn(board, "opponentMove");
+      game = new Game(board);
+      computer.turn = 0;
+      player.turn = 1;
+      board.playerMove(player);
+      expect(computer.turn).toEqual(1);
+    });
+
+  });
+
+  describe('#computerMove', function() {
+    it('calls #opponent', function() {
+      spyOn(board, "opponent");
+      game = new Game(board);
+      computer.turn = 1;
+      player.turn = 0;
+      board.computerMove(computer);
+      expect(board.opponent).toHaveBeenCalled();
+    });
+
+    it('calls #getOpenCells', function() {
+    });
+
+    it('calls #getBestMove', function() {
+    });
+
+    it('calls #addMarker', function() {
+    });
+
+    it('calls #opponentMove', function() {
+    });
+  });
+
   describe('#opponent', function() {
     it('returns opponent player X', function() {
       var oppPlayer = board.opponent(computer);
@@ -94,34 +165,40 @@ describe('Board', function() {
   describe('#opponentMove', function() {
     it('calls #playerMove', function() {
       spyOn(Board.prototype, 'playerMove');
-      game = new Game(player, computer, board);
+      board.opponentMove(player);
       expect(Board.prototype.playerMove).toHaveBeenCalled();
+    });
+
+    it('calls #computerMove', function() {
+      spyOn(Board.prototype, 'computerMove');
+      board.opponentMove(computer);
+      expect(Board.prototype.computerMove).toHaveBeenCalled();
     });
   });
 
   describe('#checkBoardStatus', function() {
     it('calls #checkBoardStatus', function() {
       spyOn(Board.prototype, 'checkBoardStatus');
-      game = new Game(player, computer, board);
+      game = new Game(board);
       board.addMarker('X', '1A');
       expect(Board.prototype.checkBoardStatus).toHaveBeenCalled();
     });
 
     it('calls #winnerCheck', function() {
       spyOn(Board.prototype, 'winnerCheck');
-      game = new Game(player, computer, board);
+      game = new Game(board);
       board.addMarker('X', '1A');
       expect(Board.prototype.winnerCheck).toHaveBeenCalled();
     });
 
-    it('calls #checkBoardStatus', function() {
-      spyOn(Board.prototype, 'checkBoardStatus');
-      game = new Game(player, computer, board);
+    it('calls #checkForTie', function() {
+      spyOn(Board.prototype, 'checkForTie');
+      game = new Game(board);
       board.addMarker('X', '1A');
-      expect(Board.prototype.checkBoardStatus).toHaveBeenCalled();
+      expect(Board.prototype.checkForTie).toHaveBeenCalled();
     });
 
-    it('calls #checkBoardStatus', function() {
+    it('returns tie message when appropriate', function() {
       board.addMarker('O', '1A');
       board.addMarker('O', '2A');
       board.addMarker('X', '3A');
@@ -167,6 +244,14 @@ describe('Board', function() {
       expect(message).toEqual('Game over! O wins!');
     });
 
+  });
+
+  describe('#deactivateBoard', function() {
+    it('removes board class from all cells', function() {
+      board.deactivateBoard();
+      var result = $('.board');
+      expect(result).toBeNull();
+    });
   });
 
   describe('#getOpenCells', function() {
