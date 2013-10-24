@@ -204,7 +204,8 @@ describe("Board", function() {
       board.addMarker('X', '3A');
       var currentBoard = board.filledSpaces;
       currentBoard['2B'] = 'O';
-      var result = board.lineScore(currentBoard, computer, '1A', '2A', '3A')
+      var line = ['1A', '2A', '3A']
+      var result = board.lineScore(currentBoard, computer, line)
       expect(result).toEqual(-10);
     });
   });
@@ -263,7 +264,7 @@ describe("Board", function() {
       game = new Game(player, computer, board);
       computer.turn = 1;
       var result = board.randomFirstMove(computer);
-      expect(result).toBeString();
+      expect(result)(jasmine.any(String));
     });
   });
 })

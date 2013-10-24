@@ -8,7 +8,9 @@ $( document ).ready(function() {
 
 // Line ---------------------------------------
   Line = function (cell1, cell2, cell3) {
-    this.lineCells = [cell1, cell2, cell3];
+    this.c1 = cell1,
+    this.c2 = cell2,
+    this.c3 = cell3;
   };
 
 // Board --------------------------------------
@@ -69,14 +71,12 @@ $( document ).ready(function() {
   };
 
   Board.prototype.lineValuesArray = function(line, board){
-    // gets board markers for each line
-    var lineValues = _.pick(board, line.lineCells[0], line.lineCells[1], line.lineCells[2]);
+    var lineValues = _.pick(board, line.c1, line.c2, line.c3);
     var lineArray = _.values(lineValues);
     return lineArray.sort();
   };
 
   Board.prototype.lineScore = function(board, player, line){
-    // returns score for a given line
     var score = 0;
     var marker = player.marker;
     var opponent = this.opponent(player);
@@ -200,9 +200,9 @@ $( document ).ready(function() {
     this.squares.removeClass('board');
   };
 
-  Board.prototype.winnerCheck = function(marker, cellsArray) {
+  Board.prototype.winnerCheck = function(marker, line) {
     var self = this;
-    var line = _.pick(this.filledSpaces, cellsArray[0], cellsArray[1], cellsArray[2]);
+    var line = _.pick(this.filledSpaces, line.c1, line.c2, line.c3);
     var lineValues = _.values(line);
     var equality = self.equalityCheck(lineValues, [marker, marker, marker])
     if (equality) {
@@ -216,7 +216,7 @@ $( document ).ready(function() {
   Board.prototype.checkBoardStatus = function(marker){
     var self = this;
     _.each(self.lines, function (line) {
-      self.winnerCheck(marker, line.lineCells);
+      self.winnerCheck(marker, line);
     });
   };
 
