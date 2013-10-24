@@ -46,7 +46,7 @@ $( document ).ready(function() {
 
   Board.prototype.getHighScoreCell = function(scoresArray){
     var cellScores = scoresArray.sort(function(a, b) {
-      return a[0] > b[0];
+      return a[0] - b[0];
     });
 
     if (cellScores.length > 0) {
