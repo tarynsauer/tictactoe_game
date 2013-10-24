@@ -1,10 +1,21 @@
-describe("Player", function() {
+describe('Player', function() {
 
   beforeEach(function() {
-    computer = new Player('O', 'human');
-    player = new Player("X", 'human');
-    board = new Board(player, computer);
-    game = new Game(player, computer, board);
-  })
+    player = new Player('X', 'human');
+  });
 
-})
+  describe('new player object', function() {
+    it('assigns marker value based on input', function() {
+      expect(player.marker).toEqual('X');
+    });
+
+    it('assigns type value based on input', function() {
+      expect(player.playerType).toEqual('human');
+    });
+
+    it('assigns default turn value of 0', function() {
+      expect(player.turn).toEqual(0);
+    });
+  });
+
+});

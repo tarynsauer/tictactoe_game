@@ -1,10 +1,11 @@
-describe("Board", function() {
+describe('Board', function() {
 
   beforeEach(function() {
     computer = new Player('O', 'human');
     player = new Player('X', 'human');
     board = new Board(computer,player);
     game = new Game(computer, player, board);
+    $('body').affix('h1#gameMessage')
     $('body').affix('table.tableBoard tr#rowA')
     $('tr#rowA').affix('td#1A.board')
     $('tr#rowA').affix('td#1B.board')
@@ -20,68 +21,107 @@ describe("Board", function() {
   });
 
   afterEach(function(){
+    $('h1#gameMessage').remove();
     $('.tableBoard').remove();
   });
 
-  describe("#addMarker", function() {
-    it("adds a marker to the board", function() {
+  describe('create new board', function() {
+    it('has a filledSpaces object attribute', function() {
+      expect(board.filledSpaces).toEqual({
+        '1A': null, '2A': null, '3A': null,
+        '1B': null, '2B': null, '3B': null,
+        '1C': null, '2C': null, '3C': null });
+    });
+
+    it('has a filledSpaces object attribute', function() {
+      expect(board.squares).toEqual(jasmine.any(Object));
+    });
+
+    it('has a playerOne object attribute', function() {
+      expect(board.playerOne).toEqual(computer);
+    });
+
+    it('has a playerTwo object attribute', function() {
+      expect(board.playerTwo).toEqual(player);
+    });
+
+    it('has a playerOneMarker object attribute', function() {
+      expect(board.playerOneMarker).toEqual('O');
+    });
+
+    it('has a playerTwoMarker object attribute', function() {
+      expect(board.playerTwoMarker).toEqual('X');
+    });
+
+    it('creates eight new line objects', function() {
+      expect(board.lines.length).toEqual(8);
+    });
+
+    it('board has an array of new line objects', function() {
+      expect(board.lines).toEqual(jasmine.any(Array));
+    });
+
+  });
+
+  describe('#addMarker', function() {
+    it('adds a marker to the board', function() {
       board.addMarker('X', '2C');
       var cellValue = $('#2C').prop('outerHTML');
       expect(cellValue).toEqual('<td id="2C" class="">X</td>');
     });
 
-    it("adds the marker ID to the filledSpaces object", function() {
+    it('adds the marker ID to the filledSpaces object', function() {
       board.addMarker('X', '2C');
       var filledSpacesArray = board.filledSpaces;
-      expect(filledSpacesArray).toEqual({ "1A": null, "2A": null, "3A": null, "1B": null, "2B": null, "3B": null, "1C": null, "2C": 'X', "3C": null });
+      expect(filledSpacesArray).toEqual({ '1A': null, '2A': null, '3A': null,
+        '1B': null, '2B': null, '3B': null, '1C': null, '2C': 'X', '3C': null });
     });
 
   });
 
-  describe("#opponent", function() {
-    it("returns opponent player X", function() {
+  describe('#opponent', function() {
+    it('returns opponent player X', function() {
       var oppPlayer = board.opponent(computer);
       expect(oppPlayer.marker).toEqual('X');
     });
 
-    it("returns opponent player Y", function() {
+    it('returns opponent player Y', function() {
       var oppPlayer = board.opponent(player);
       expect(oppPlayer.marker).toEqual('O');
     });
   });
 
-  describe("#opponentMove", function() {
-    it("calls #playerMove", function() {
-      spyOn(Board.prototype, "playerMove");
+  describe('#opponentMove', function() {
+    it('calls #playerMove', function() {
+      spyOn(Board.prototype, 'playerMove');
       game = new Game(player, computer, board);
       expect(Board.prototype.playerMove).toHaveBeenCalled();
     });
   });
 
-  describe("#checkBoardStatus", function() {
-    it("calls #checkBoardStatus", function() {
-      spyOn(Board.prototype, "checkBoardStatus");
+  describe('#checkBoardStatus', function() {
+    it('calls #checkBoardStatus', function() {
+      spyOn(Board.prototype, 'checkBoardStatus');
       game = new Game(player, computer, board);
       board.addMarker('X', '1A');
       expect(Board.prototype.checkBoardStatus).toHaveBeenCalled();
     });
 
-    it("calls #winnerCheck", function() {
-      spyOn(Board.prototype, "winnerCheck");
+    it('calls #winnerCheck', function() {
+      spyOn(Board.prototype, 'winnerCheck');
       game = new Game(player, computer, board);
       board.addMarker('X', '1A');
       expect(Board.prototype.winnerCheck).toHaveBeenCalled();
     });
 
-    it("calls #checkBoardStatus", function() {
-      spyOn(Board.prototype, "checkBoardStatus");
+    it('calls #checkBoardStatus', function() {
+      spyOn(Board.prototype, 'checkBoardStatus');
       game = new Game(player, computer, board);
       board.addMarker('X', '1A');
       expect(Board.prototype.checkBoardStatus).toHaveBeenCalled();
     });
 
-    it("calls #checkBoardStatus", function() {
-      game = new Game(player, computer, board);
+    it('calls #checkBoardStatus', function() {
       board.addMarker('O', '1A');
       board.addMarker('O', '2A');
       board.addMarker('X', '3A');
@@ -96,9 +136,8 @@ describe("Board", function() {
     });
   });
 
-  describe("#winnerCheck", function() {
-    it("identifies a winning row", function() {
-      game = new Game(player, computer, board);
+  describe('#winnerCheck', function() {
+    it('identifies a winning row', function() {
       board.addMarker('X', '1A');
       board.addMarker('O', '2B');
       board.addMarker('X', '3A');
@@ -108,8 +147,7 @@ describe("Board", function() {
       expect(message).toEqual('Game over! X wins!');
     });
 
-    it("identifies a winning column", function() {
-      game = new Game(player, computer, board);
+    it('identifies a winning column', function() {
       board.addMarker('X', '1A');
       board.addMarker('O', '2B');
       board.addMarker('X', '1B');
@@ -119,22 +157,20 @@ describe("Board", function() {
       expect(message).toEqual('Game over! X wins!');
     });
 
-    it("identifies a winning diagonal line", function() {
-      game = new Game(player, computer, board);
+    it('identifies a winning diagonal line', function() {
       board.addMarker('O', '1A');
       board.addMarker('X', '3B');
       board.addMarker('O', '2B');
       board.addMarker('X', '2C');
       board.addMarker('O', '3C');
-      var message = $('#gameStatusMessage').html();
+      var message = $('#gameMessage').html();
       expect(message).toEqual('Game over! O wins!');
     });
 
   });
 
-  describe("#getOpenCells", function() {
-    it("returns all open cells as an array", function() {
-      game = new Game(player, computer, board);
+  describe('#getOpenCells', function() {
+    it('returns all open cells as an array', function() {
       board.addMarker('X', '1A');
       board.addMarker('O', '2A');
       board.addMarker('X', '3A');
@@ -143,9 +179,8 @@ describe("Board", function() {
     });
   });
 
-  describe("#calcScore", function() {
-    it("returns cellID score array", function() {
-      game = new Game(player, computer, board);
+  describe('#calcScore', function() {
+    it('returns cellID score array', function() {
       board.addMarker('X', '1A');
       board.addMarker('O', '2A');
       board.addMarker('X', '3A');
@@ -154,9 +189,8 @@ describe("Board", function() {
     });
   });
 
-  describe("#getBestMove", function() {
-    it("returns the cellID with the highest score", function() {
-      game = new Game(player, computer, board);
+  describe('#getBestMove', function() {
+    it('returns the cellID with the highest score', function() {
       board.addMarker('X', '1A');
       board.addMarker('O', '1B');
       board.addMarker('X', '3A');
@@ -165,8 +199,7 @@ describe("Board", function() {
       expect(bestMove).toEqual('2B');
     });
 
-    it("returns the cellID with the highest score", function() {
-      game = new Game(player, computer, board);
+    it('returns the cellID with the highest score', function() {
       board.addMarker('X', '1A');
       board.addMarker('O', '2B');
       board.addMarker('X', '3A');
@@ -175,8 +208,7 @@ describe("Board", function() {
       expect(bestMove).toEqual('2A');
     });
 
-    it("returns the cellID with the highest score", function() {
-      game = new Game(player, computer, board);
+    it('returns the cellID with the highest score', function() {
       board.addMarker('X', '1C');
       board.addMarker('O', '2A');
       var openCellsArray = board.getOpenCells();
@@ -184,8 +216,7 @@ describe("Board", function() {
       expect(bestMove).toEqual('2B');
     });
 
-    it("returns the cellID of the best move", function() {
-      game = new Game(player, computer, board);
+    it('returns the cellID of the best move', function() {
       board.addMarker('X', '1A');
       board.addMarker('O', '3B');
       board.addMarker('X', '3C');
@@ -196,9 +227,8 @@ describe("Board", function() {
 
   });
 
-  describe("#lineScore", function() {
-    it("returns correct score of row one", function() {
-      game = new Game(player, computer, board);
+  describe('#lineScore', function() {
+    it('returns correct score of row one', function() {
       board.addMarker('X', '1A');
       board.addMarker('O', '1B');
       board.addMarker('X', '3A');
@@ -206,13 +236,12 @@ describe("Board", function() {
       currentBoard['2B'] = 'O';
       var line = ['1A', '2A', '3A']
       var result = board.lineScore(currentBoard, computer, line)
-      expect(result).toEqual(-10);
+      expect(result).toEqual(0);
     });
   });
 
-  describe("#getOpenCells", function() {
-    it("returns the cellID of all open cells", function() {
-      game = new Game(player, computer, board);
+  describe('#getOpenCells', function() {
+    it('returns the cellID of all open cells', function() {
       board.addMarker('X', '1A');
       board.addMarker('O', '1B');
       board.addMarker('X', '3A');
@@ -221,50 +250,32 @@ describe("Board", function() {
     });
   });
 
-  describe("#getHighScoreCell", function() {
-    it("returns the cellID with the highest score", function() {
-      game = new Game(player, computer, board);
+  describe('#getLineValuesArray', function() {
+    it('returns a sorted array of marks', function() {
+      var line = new Line('1A', '1B', '1C');
+      board.addMarker('X', '1A');
+      board.addMarker('X', '1B');
+      var result = board.lineValuesArray(line, board);
+      expect(result).toEqual(['X', 'X', null]);
+    });
+  });
+
+  describe('#getHighScoreCell', function() {
+    it('returns the cellID with the highest score', function() {
       var result = board.getHighScoreCell([[8, '2A'], [10, '2B'], [100, '3B'], [-100, '1C'], [-55, '2C']]);
       expect(result).toEqual('3B');
     });
   });
 
-  describe("#equalityCheck", function() {
-    it("returns true if arrays are the same", function() {
-      game = new Game(player, computer, board);
+  describe('#equalityCheck', function() {
+    it('returns true if arrays are the same', function() {
       var result = board.equalityCheck(['X', 'X', null], ['X', 'X', null]);
       expect(result).toBe(true);
     });
 
-    it("returns false if arrays are not the same", function() {
-      game = new Game(player, computer, board);
+    it('returns false if arrays are not the same', function() {
       var result = board.equalityCheck(['X', 'X', null], ['X', null, null]);
       expect(result).toBe(false);
-    });
-  });
-
-  describe("#randomFirstMove", function() {
-    it("calls #addMarker", function() {
-      spyOn(Board.prototype, "addMarker");
-      computer.turn = 1;
-      game = new Game(player, computer, board);
-      board.randomFirstMove(computer);
-      expect(Board.prototype.addMarker).toHaveBeenCalled();
-    });
-
-    it("calls #opponentMove", function() {
-      spyOn(Board.prototype, "opponentMove");
-      game = new Game(player, computer, board);
-      computer.turn = 1
-      board.randomFirstMove(computer);
-      expect(Board.prototype.opponentMove).toHaveBeenCalled();
-    });
-
-    it("returns a cellID string", function() {
-      game = new Game(player, computer, board);
-      computer.turn = 1;
-      var result = board.randomFirstMove(computer);
-      expect(result)(jasmine.any(String));
     });
   });
 })

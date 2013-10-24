@@ -1,20 +1,24 @@
-describe("Line", function() {
+describe('Line', function() {
 
   beforeEach(function() {
     computer = new Player('O', 'human');
     player = new Player('X', 'human');
     board = new Board(computer,player);
-    game = new Game(computer, player, board);
+    line = new Line('1A', '1B', '1C');
   });
 
-  describe("new board", function() {
-    it("creates eight new lines on creating a new board", function() {
-      expect(board.lines.length).toEqual(8);
+  describe('new line', function() {
+    it('has cell values c1', function() {
+      expect(line.c1).toEqual('1A');
     });
 
-    it("creates an array of new lines on creating a board", function() {
-      expect(board.lines).toEqual(jasmine.any(Array));
+    it('has cell value c2', function() {
+      expect(line.c2).toEqual('1B');
+    });
+
+    it('has cell value c3', function() {
+      expect(line.c3).toEqual('1C');
     });
   });
 
-})
+});

@@ -15,22 +15,22 @@ $( document ).ready(function() {
 
 // Board --------------------------------------
   Board = function (playerOne, playerTwo) {
-    this.filledSpaces = { "1A": null, "2A": null, "3A": null,
-                          "1B": null, "2B": null, "3B": null,
-                          "1C": null, "2C": null, "3C": null };
-    this.squares = $( ".board" );
+    this.filledSpaces = { '1A': null, '2A': null, '3A': null,
+                          '1B': null, '2B': null, '3B': null,
+                          '1C': null, '2C': null, '3C': null };
+    this.squares = $( '.board' );
     this.playerOne = playerOne;
     this.playerTwo = playerTwo;
     this.playerOneMarker = playerOne.marker;
     this.playerTwoMarker = playerTwo.marker;
-    this.lines = [ new Line("1A", "2A", "3A"),
-                   new Line ("1B", "2B", "3B"),
-                   new Line ("1C", "2C", "3C"),
-                   new Line ("1A", "1B", "1C"),
-                   new Line ("2A", "2B", "2C"),
-                   new Line ("3A", "3B", "3C"),
-                   new Line ("1A", "2B", "3C"),
-                   new Line ("1C", "2B", "3A"), ]
+    this.lines = [ new Line('1A', '2A', '3A'),
+                   new Line('1B', '2B', '3B'),
+                   new Line('1C', '2C', '3C'),
+                   new Line('1A', '1B', '1C'),
+                   new Line('2A', '2B', '2C'),
+                   new Line('3A', '3B', '3C'),
+                   new Line('1A', '2B', '3C'),
+                   new Line('1C', '2B', '3A'), ]
   };
 
   Board.prototype.getOpenCells = function(){
@@ -116,10 +116,10 @@ $( document ).ready(function() {
   };
 
   Board.prototype.addMarker = function(marker, cellId){
-    var currentValue = $( "#" + cellId ).html();
+    var currentValue = $( '#' + cellId ).html();
     if (_.isEmpty(currentValue)) {
-      $( "#" + cellId ).html(marker);
-      $( "#" + cellId ).removeClass("board");
+      $( '#' + cellId ).html(marker);
+      $( '#' + cellId ).removeClass('board');
       this.filledSpaces[cellId] = marker;
       this.checkBoardStatus(marker);
       return true;
@@ -252,9 +252,9 @@ $( document ).ready(function() {
     var playerGoesFirst = ['true','false'][Math.round(Math.random())];
     if (playerGoesFirst === 'true') {
       this.playerOne.turn = 1;
-      $('#gameMessage').html(this.playerOne.marker + " goes first!");
+      $('#gameMessage').html(this.playerOne.marker + ' goes first!');
     } else {
-      $('#gameMessage').html(this.playerTwo.marker + " goes first!");
+      $('#gameMessage').html(this.playerTwo.marker + ' goes first!');
       this.playerTwo.turn = 1;
     }
   };

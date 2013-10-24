@@ -1,4 +1,4 @@
-describe("Game", function() {
+describe('Game', function() {
 
   beforeEach(function() {
     computer = new Player('O', 'human');
@@ -17,39 +17,53 @@ describe("Game", function() {
     $('tr#rowC').affix('td#3B.board');
     $('tr#rowC').affix('td#3C.board');
     $('body').affix('p#gameStatusMessage');
-  })
-
-  describe("click event",function() {
-    it("triggers page refresh when clicked", function() {
-      game = new Game(player, computer, board);
-      game.newGame.trigger('click');
-      // expect page to refresh
-    });
+    game = new Game(player, computer, board);
   });
 
-  describe("#gameRestartListener", function() {
-    it("calls #gameRestartListener", function() {
-      spyOn(Game.prototype, "gameRestartListener");
+  describe('create new game',function() {
+    it('assigns new player to playerOne', function() {
+      expect(game.playerOne).toEqual(jasmine.any(Object));
+    });
+
+    it('assigns player object to playerTwo', function() {
+      expect(game.playerTwo).toEqual(jasmine.any(Object));
+    });
+
+    it('assigns player object to playerTwo', function() {
+      expect(game.playerTwo).toEqual(jasmine.any(Object));
+    });
+
+    it('assigns board object to board', function() {
+      expect(game.board).toEqual(jasmine.any(Object));
+    });
+
+    it('assigns jQuery object to newGame', function() {
+      expect(game.newGame).toEqual(jasmine.any(Object));
+    });
+
+    it('calls #gameRestartListener', function() {
+      spyOn(Game.prototype, 'gameRestartListener');
       game = new Game(player, computer, board);
       expect(Game.prototype.gameRestartListener).toHaveBeenCalled();
     });
-  });
 
-  describe("#whoGoesFirst", function() {
-    it("calls #whoGoesFirst", function() {
-      spyOn(Game.prototype, "whoGoesFirst");
+    it('calls #startGame', function() {
+      spyOn(Game.prototype, 'startGame');
+      game = new Game(player, computer, board);
+      expect(Game.prototype.startGame).toHaveBeenCalled();
+    });
+
+    it('calls #whoGoesFirst', function() {
+      spyOn(Game.prototype, 'whoGoesFirst');
       game = new Game(player, computer, board);
       expect(Game.prototype.whoGoesFirst).toHaveBeenCalled();
     });
 
-  });
-
-  describe("#setUpPlayerByType", function() {
-    it("calls #whoGoesFirst", function() {
-      spyOn(Game.prototype, "setUpPlayerByType");
+    it('calls #setUpPlayerByType', function() {
+      spyOn(Game.prototype, 'setUpPlayerByType');
       game = new Game(player, computer, board);
       expect(Game.prototype.setUpPlayerByType).toHaveBeenCalled();
     });
-
   });
-})
+
+});
