@@ -86,67 +86,18 @@ describe('Board', function() {
       computer.turn = 0;
       player.turn = 1;
       $('#1A').trigger('click');
-      expect(board.playerMove).toHaveBeenCalled();
+      expect(board.playerMove).toHaveBeenCalledWith(player);
     });
-
-    // it('calls #opponent', function() {
-    //   spyOn(board, "opponent");
-    //   game = new Game(board);
-    //   computer.turn = 0;
-    //   player.turn = 1;
-    //   board.playerMove(player);
-    //   expect(board.opponent).toHaveBeenCalled();
-    // });
-
-    // it('calls #opponentMove', function() {
-    //   spyOn(board, "opponentMove");
-    //   game = new Game(board);
-    //   computer.turn = 0;
-    //   player.turn = 1;
-    //   board.playerMove(player);
-    //   expect(board.opponentMove).toHaveBeenCalled();
-    // });
-
-    // it('changes assigns player turn to 0', function() {
-    //   spyOn(board, "opponentMove");
-    //   game = new Game(board);
-    //   computer.turn = 0;
-    //   player.turn = 1;
-    //   board.playerMove(player);
-    //   expect(player.turn).toEqual(0);
-    // });
-
-    it('assigns opponent turn value to 1', function() {
-      spyOn(board, "opponentMove");
-      game = new Game(board);
-      computer.turn = 0;
-      player.turn = 1;
-      board.playerMove(player);
-      expect(computer.turn).toEqual(1);
-    });
-
   });
 
   describe('#computerMove', function() {
-    it('calls #opponent', function() {
-      spyOn(board, "opponent");
+    it('calls #addMarker', function() {
+      spyOn(board, "computerMove");
       game = new Game(board);
       computer.turn = 1;
       player.turn = 0;
       board.computerMove(computer);
-      expect(board.opponent).toHaveBeenCalled();
-    });
-
-    it('calls #getOpenCells', function() {
-    });
-
-    it('calls #getBestMove', function() {
-    });
-
-    it('calls #addMarker', function() {
-    });
-
-    it('calls #opponentMove', function() {
+      expect(board.computerMove).toHaveBeenCalledWith(computer);
     });
   });
 
@@ -246,14 +197,6 @@ describe('Board', function() {
 
   });
 
-  describe('#deactivateBoard', function() {
-    it('removes board class from all cells', function() {
-      board.deactivateBoard();
-      var result = $('.board');
-      expect(result).toBeNull();
-    });
-  });
-
   describe('#getOpenCells', function() {
     it('returns all open cells as an array', function() {
       board.addMarker('X', '1A');
@@ -332,16 +275,6 @@ describe('Board', function() {
       board.addMarker('X', '3A');
       var result = board.getOpenCells();
       expect(result).toEqual(['2A', '2B', '3B', '1C', '2C', '3C']);
-    });
-  });
-
-  describe('#getLineValuesArray', function() {
-    it('returns a sorted array of marks', function() {
-      var line = new Line('1A', '1B', '1C');
-      board.addMarker('X', '1A');
-      board.addMarker('X', '1B');
-      var result = board.lineValuesArray(line, board);
-      expect(result).toEqual(['X', 'X', null]);
     });
   });
 
