@@ -20,5 +20,4 @@ describe('Line', function() {
       expect(line.c3).toEqual('1C');
     });
   });
-
 });
