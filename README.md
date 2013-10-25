@@ -4,10 +4,8 @@ This JavaScript tic-tac-toe game allows for comptuer vs. computer, human vs. com
 
 ## Getting started
 
-To get this program, clone the repository to your local machine, then open the following file in a web browser:
-```
-index.html
-```
+To get this program, clone the repository to your local machine, then open the ```index.html``` file in a web browser.
+
 ## Playing the game
 
 Once you've opened this file in the browser, follow these steps to begin playing the game:
@@ -59,8 +57,4 @@ The application source file ```/src/tictactoe.js``` contains the following class
 
 ## Spec
 
-To run the Jasmine specs, open the following file in a web browser:
-```
-SpecRunner.html
-```
-Refresh the browser page to re-run the specs.
+To run the Jasmine specs, open the ```SpecRunner.html``` file in a web browser. Refresh the browser page to re-run the specs.
