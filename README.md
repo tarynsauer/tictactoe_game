@@ -38,7 +38,7 @@ This process uses a [Minimax](https://en.wikipedia.org/wiki/Minimax) search algo
 
 ## Technology
 
-I used the following tools and technologies to make this web application:
+This web application uses following tools and technologies:
 
 * [HTML5 Bloilerplate](http://html5boilerplate.com/)
 * [JQuery](http://jquery.com/)
