@@ -1,6 +1,6 @@
 # Tic-tac-toe game with AI option
 
-This tic-tac-toe game allows for comptuer vs. computer, human vs. computer, and human vs. human matchups. The computer is unbeatable, and all computer vs. computer matchups result in a tie. You can play the game in a web browser.
+This JavaScript tic-tac-toe game allows for comptuer vs. computer, human vs. computer, and human vs. human matchups. The computer is unbeatable, and all computer vs. computer matchups result in a tie. You can play the game in a web browser.
 
 ## Getting started
 
@@ -38,7 +38,7 @@ To always be "unbeatable", computer players use the following procedure to selec
 
 This process uses a [Minimax](https://en.wikipedia.org/wiki/Minimax) search algorithm.
 
-## Technology used
+## Technology
 
 I used the following tools and technologies to make this web application:
 
@@ -57,7 +57,7 @@ The application source file ```/src/tictactoe.js``` contains the following class
 * **Board** - sets the board variables for a given game, including lines and players. This class defines the AI logic, player move actions, and monitors the status of the game (win or tie).
 * **Game** - sets up new games. This class starts new games, determines which player goes first, and resets the game settings panel.
 
-### Spec
+## Spec
 
 To run the Jasmine specs, open the following file in a web browser:
 ```
