@@ -65,5 +65,4 @@ describe('Game', function() {
       expect(Game.prototype.setUpPlayerByType).toHaveBeenCalled();
     });
   });
-
 });

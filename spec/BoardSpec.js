@@ -76,7 +76,6 @@ describe('Board', function() {
       expect(filledSpacesArray).toEqual({ '1A': null, '2A': null, '3A': null,
         '1B': null, '2B': null, '3B': null, '1C': null, '2C': 'X', '3C': null });
     });
-
   });
 
   describe('#playerMove', function() {
@@ -252,7 +251,6 @@ describe('Board', function() {
       var bestMove = board.getBestMove(openCellsArray, computer)
       expect(bestMove).toEqual('2B');
     });
-
   });
 
   describe('#lineScore', function() {
