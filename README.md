@@ -2,13 +2,6 @@
 
 This tic-tac-toe game allows for comptuer vs. computer, human vs. computer, and human vs. human matchups. The computer is unbeatable, and all computer vs. computer matchups result in a tie. You can play the game in a web browser.
 
-##### Contents
-[Getting started](#getting-started)
-[Playing the game](#playing-the-game)
-[AI algorithm](#ai-algorithm)
-[Technology used](#technology-used)
-[Structure](#structure)
-
 ## Getting started
 
 To get this program, clone the repository to your local machine, then open the following file in a web browser:
