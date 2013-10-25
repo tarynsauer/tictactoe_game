@@ -13,7 +13,7 @@ Once you've opened this file in the browser, follow these steps to begin playing
 1. For each player, select a marker and player type. Players must have different markers, or else an error appears.
 2. Click **Start game!** button to begin playing.
 3. The program randomly selects which player goes first. This selection appears in the message header.
-4. Players alternate clicking on the board to add their respective marker.
+4. Players alternate clicking on the board to add their respective marker. (For computer players, marks are added automatically.)
 5. Once one player wins or the board contains nine markers (a tie), gameplay stops and the game outcome appears in the message header.
 6. Click the **New Game** button to play again.
 
