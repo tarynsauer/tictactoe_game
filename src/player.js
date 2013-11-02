@@ -4,14 +4,7 @@
     this.turn = 0;
     this.playerType = playerType;
     this.ai = new AI();
-  };
-
-  Player.prototype.opponent = function(player) {
-    if (player === playerOne) {
-      return playerTwo;
-    } else {
-      return playerOne;
-    }
+    this.opponent;
   };
 
   Player.prototype.opponentMove = function(player) {
@@ -31,9 +24,8 @@
         var valid = board.addMarker(playerMarker, cellId);
         if (valid) {
           player.turn = 0;
-          var opponent = self.opponent(player);
-          opponent.turn = 1;
-          self.opponentMove(opponent);
+          player.opponent.turn = 1;
+          self.opponentMove(player.opponent);
         } else {
           self.playerMove(player);
         }
@@ -45,15 +37,13 @@
     var self = this;
     setTimeout(function() {
       var computerMarker = computer.marker;
-      var opponent = self.opponent(computer);
-
       if (computer.turn === 1) {
         var openCellsArray = board.getOpenCells();
         var cellID = self.ai.getBestMove(openCellsArray, computer);
         board.addMarker(computerMarker, cellID);
         computer.turn = 0;
-        opponent.turn = 1;
-        self.opponentMove(opponent);
+        computer.opponent.turn = 1;
+        self.opponentMove(computer.opponent);
       }
     }, 1500);
   }
@@ -61,13 +51,12 @@
   Player.prototype.randomFirstMove = function( computer ) {
     var cellIDs = _.keys(board.filledSpaces);
     var randomCell = _.sample(cellIDs, 1);
-    var opponent = computer.opponent(computer);
     setTimeout(function() {
       if (computer.turn === 1) {
         board.addMarker(computer.marker, randomCell);
         computer.turn = 0;
-        opponent.turn = 1;
-        computer.opponentMove(opponent);
+        computer.opponent.turn = 1;
+        computer.opponentMove(computer.opponent);
       }
     }, 2000);
   };

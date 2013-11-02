@@ -1,7 +1,10 @@
 describe('Player', function() {
 
   beforeEach(function() {
+    computer = new Player('O', 'computer');
     player = new Player('X', 'human');
+    board = new Board(computer,player);
+    game = new Game(board);
   });
 
   describe('new player object', function() {
@@ -14,7 +17,56 @@ describe('Player', function() {
     });
 
     it('assigns default turn value of 0', function() {
+      player = new Player('X', 'human');
       expect(player.turn).toEqual(0);
+    });
+  });
+
+  describe('#opponent', function() {
+    it('returns opponent player O', function() {
+      var oppPlayer = computer.opponent;
+      expect(oppPlayer.marker).toEqual('X');
+    });
+
+    it('returns opponent player X', function() {
+      var oppPlayer = player.opponent;
+      expect(oppPlayer.marker).toEqual('O');
+    });
+  });
+
+  describe('#playerMove', function() {
+    it('calls #addMarker', function() {
+      spyOn(board, "playerMove");
+      game = new Game(board);
+      computer.turn = 0;
+      player.turn = 1;
+      $('#1A').trigger('click');
+      expect(player.playerMove).toHaveBeenCalledWith(player);
+    });
+  });
+
+  describe('#computerMove', function() {
+    it('calls #addMarker', function() {
+      spyOn(board, "computerMove");
+      game = new Game(board);
+      computer.turn = 1;
+      player.turn = 0;
+      computer.computerMove(computer);
+      expect(computer.addMarker).toHaveBeenCalledWith(computer);
+    });
+  });
+
+  describe('#opponentMove', function() {
+    it('calls #playerMove', function() {
+      spyOn(Player.prototype, 'playerMove');
+      player.opponentMove(player);
+      expect(Player.prototype.playerMove).toHaveBeenCalled();
+    });
+
+    it('calls #computerMove', function() {
+      spyOn(Player.prototype, 'computerMove');
+      computer.opponentMove(computer);
+      expect(Player.prototype.computerMove).toHaveBeenCalled();
     });
   });
 });

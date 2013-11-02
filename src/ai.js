@@ -31,8 +31,7 @@
   AI.prototype.lineScore = function(boardSpaces, player, line){
     var score = 0;
     var marker = player.marker;
-    var opponent = player.opponent(player);
-    var otherMarker = opponent.marker;
+    var otherMarker = player.opponent.marker;
     var sortedArray = this.lineValuesArray(line, boardSpaces);
     var result1 = board.equalityCheck(sortedArray, [marker, marker, marker]);
     var result2 = board.equalityCheck(sortedArray, [marker, marker, null]);

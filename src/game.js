@@ -7,6 +7,7 @@
     this.newGame = $('#newGame');
     this.whoGoesFirst();
     this.startGame();
+    this.setOpponents();
   };
 
   Game.prototype.showNewGameForm = function(marker) {
@@ -42,6 +43,11 @@
       this.firstMoveMessage(this.playerTwo.marker);
       this.playerTwo.turn = 1;
     }
+  };
+
+  Game.prototype.setOpponents = function() {
+    this.playerOne.opponent = this.playerTwo;
+    this.playerTwo.opponent = this.playerOne;
   };
 
   Game.prototype.setUpPlayerByType = function(player) {
