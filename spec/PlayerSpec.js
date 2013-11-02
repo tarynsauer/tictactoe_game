@@ -36,23 +36,12 @@ describe('Player', function() {
 
   describe('#playerMove', function() {
     it('calls #addMarker', function() {
-      spyOn(board, "playerMove");
+      spyOn(Player.prototype, 'playerMove');
       game = new Game(board);
       computer.turn = 0;
       player.turn = 1;
       $('#1A').trigger('click');
-      expect(player.playerMove).toHaveBeenCalledWith(player);
-    });
-  });
-
-  describe('#computerMove', function() {
-    it('calls #addMarker', function() {
-      spyOn(board, "computerMove");
-      game = new Game(board);
-      computer.turn = 1;
-      player.turn = 0;
-      computer.computerMove(computer);
-      expect(computer.addMarker).toHaveBeenCalledWith(computer);
+      expect(Player.prototype.playerMove).toHaveBeenCalledWith(player);
     });
   });
 

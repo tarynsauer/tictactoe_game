@@ -19,7 +19,8 @@
     var playerMarker = player.marker;
     var self = this;
     $(board.squares).click(function(event) {
-      if (board.activeCell(event.target.id) && player.turn === 1) {
+      var cellId = event.target.id;
+      if (board.activeCell(cellId) && player.turn === 1) {
         var playerMarker = player.marker;
         var valid = board.addMarker(playerMarker, cellId);
         if (valid) {

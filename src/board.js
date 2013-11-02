@@ -28,7 +28,7 @@
   };
 
   Board.prototype.activeCell = function(cellId) {
-    $('#' + cellId).hasClass('board');
+    return $('#' + cellId).hasClass('board');
   };
 
   Board.prototype.placeMarkerOnBoard = function(marker, cellId) {

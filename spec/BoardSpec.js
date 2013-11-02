@@ -179,4 +179,17 @@ describe('Board', function() {
       expect(result).toBe(false);
     });
   });
+
+  describe('#activeCell', function() {
+    it('returns true if the cell is active', function() {
+      var result = board.activeCell('1A');
+      expect(result).toBe(true);
+    });
+
+    it('returns false if the cell is inactive', function() {
+      board.addMarker('X', '1A');
+      var result = board.activeCell('1A');
+      expect(result).toBe(false);
+    });
+  });
 })
