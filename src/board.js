@@ -18,14 +18,7 @@
                    new Line('1C', '2B', '3A'), ]
   };
 
-  Board.prototype.deactivateBoard = function() {
-    this.squares.removeClass('board');
-  };
-
-  Board.prototype.cellEmpty = function(cellId) {
-    var currentValue = $( '#' + cellId ).html();
-    return _.isEmpty(currentValue);
-  };
+  // Interface methods-------------------------------------
 
   Board.prototype.activeCell = function(cellId) {
     return $('#' + cellId).hasClass('board');
@@ -36,19 +29,14 @@
     $( '#' + cellId ).removeClass('board');
   };
 
-  Board.prototype.getOpenCells = function(){
-    var openCells = [];
-    var currentCells = this.filledSpaces;
-    _.each(currentCells, function (cellValue, cellID) {
-      if (cellValue === null) {
-        openCells.push(cellID);
-      }
-    });
-    return openCells;
+  Board.prototype.deactivateBoard = function() {
+    this.squares.removeClass('board');
   };
 
+  // ---------------------------------------------------------
+
   Board.prototype.addMarker = function(marker, cellId){
-    if (this.cellEmpty(cellId)) {
+    if (this.activeCell(cellId)) {
       this.placeMarkerOnBoard(marker, cellId);
       this.filledSpaces[cellId] = marker;
       this.checkBoardStatus(marker);
@@ -90,4 +78,15 @@
   Board.prototype.equalityCheck = function(array1, array2){
     var equalityBoolean = _.isEqual(array1, array2);
     return equalityBoolean;
+  };
+
+  Board.prototype.getOpenCells = function(){
+    var openCells = [];
+    var currentCells = this.filledSpaces;
+    _.each(currentCells, function (cellValue, cellID) {
+      if (cellValue === null) {
+        openCells.push(cellID);
+      }
+    });
+    return openCells;
   };

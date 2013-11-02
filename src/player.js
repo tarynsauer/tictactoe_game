@@ -7,15 +7,20 @@
     this.opponent;
   };
 
-  Player.prototype.opponentMove = function(player) {
-    if (player.playerType === 'computer') {
-      player.computerMove(player);
-    } else {
-      player.playerMove(player);
-    }
+  Player.prototype.randomFirstMove = function(computer) {
+    var cellIDs = _.keys(board.filledSpaces);
+    var randomCell = _.sample(cellIDs, 1);
+    setTimeout(function() {
+      if (computer.turn === 1) {
+        board.addMarker(computer.marker, randomCell);
+        computer.turn = 0;
+        computer.opponent.turn = 1;
+        computer.opponentMove(computer.opponent);
+      }
+    }, 2000);
   };
 
-  Player.prototype.playerMove = function( player ) {
+  Player.prototype.playerMove = function(player) {
     var playerMarker = player.marker;
     var self = this;
     $(board.squares).click(function(event) {
@@ -34,7 +39,7 @@
     });
   };
 
-  Player.prototype.computerMove = function( computer ) {
+  Player.prototype.computerMove = function(computer) {
     var self = this;
     setTimeout(function() {
       var computerMarker = computer.marker;
@@ -47,17 +52,12 @@
         self.opponentMove(computer.opponent);
       }
     }, 1500);
-  }
+  };
 
-  Player.prototype.randomFirstMove = function( computer ) {
-    var cellIDs = _.keys(board.filledSpaces);
-    var randomCell = _.sample(cellIDs, 1);
-    setTimeout(function() {
-      if (computer.turn === 1) {
-        board.addMarker(computer.marker, randomCell);
-        computer.turn = 0;
-        computer.opponent.turn = 1;
-        computer.opponentMove(computer.opponent);
-      }
-    }, 2000);
+  Player.prototype.opponentMove = function(player) {
+    if (player.playerType === 'computer') {
+      player.computerMove(player);
+    } else {
+      player.playerMove(player);
+    }
   };

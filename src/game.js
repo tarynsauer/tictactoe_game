@@ -5,10 +5,10 @@
     this.board = board;
     this.ai = new AI();
     this.newGame = $('#newGame');
-    this.whoGoesFirst();
     this.startGame();
-    this.setOpponents();
   };
+
+  // Interface methods-------------------------------------
 
   Game.prototype.showNewGameForm = function(marker) {
     this.newGame.addClass('invisible');
@@ -27,11 +27,14 @@
     $('#gameMessage').html("Game over! It's a tie!");
   };
 
-  Game.prototype.gameRestartListener = function() {
-    this.newGame.click(function() {
-      location.reload();
-      this.showNewGameForm();
-    });
+  // ---------------------------------------------------------
+
+  Game.prototype.startGame = function() {
+    this.gameRestartListener();
+    this.whoGoesFirst();
+    this.setOpponents();
+    this.setUpPlayerByType(this.playerOne);
+    this.setUpPlayerByType(this.playerTwo);
   };
 
   Game.prototype.whoGoesFirst = function(){
@@ -43,6 +46,13 @@
       this.firstMoveMessage(this.playerTwo.marker);
       this.playerTwo.turn = 1;
     }
+  };
+
+  Game.prototype.gameRestartListener = function() {
+    this.newGame.click(function() {
+      location.reload();
+      this.showNewGameForm();
+    });
   };
 
   Game.prototype.setOpponents = function() {
@@ -58,10 +68,4 @@
     } else {
       player.playerMove(player);
     }
-  };
-
-  Game.prototype.startGame = function() {
-    this.gameRestartListener();
-    this.setUpPlayerByType(this.playerOne);
-    this.setUpPlayerByType(this.playerTwo);
   };
