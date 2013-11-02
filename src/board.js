@@ -51,7 +51,6 @@
     var self = this;
     _.each(self.lines, function (line) {
       linesChecked.push(self.winnerCheck(marker, line));
-      console.log(linesChecked);
     });
     if (_.compact(linesChecked).length === 0) {
       self.checkForTie();
