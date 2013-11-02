@@ -47,11 +47,15 @@
   };
 
   Board.prototype.checkBoardStatus = function(marker){
+    var linesChecked = [];
     var self = this;
     _.each(self.lines, function (line) {
-      self.winnerCheck(marker, line);
+      linesChecked.push(self.winnerCheck(marker, line));
+      console.log(linesChecked);
     });
-    self.checkForTie();
+    if (_.compact(linesChecked).length === 0) {
+      self.checkForTie();
+    }
   };
 
   Board.prototype.winnerCheck = function(marker, line) {
@@ -62,6 +66,7 @@
     if (equal) {
       game.showWinMessage(marker);
       self.deactivateBoard();
+      return true;
     }
   };
 
