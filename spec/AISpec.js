@@ -30,7 +30,7 @@ describe('AI', function() {
       board.addMarker('X', '1A');
       board.addMarker('O', '2A');
       board.addMarker('X', '3A');
-      var result = game.ai.calcScore('2B', computer)
+      var result = computer.ai.calcScore('2B', computer)
       expect(result).toEqual(9);
     });
   });
@@ -41,7 +41,7 @@ describe('AI', function() {
       board.addMarker('O', '1B');
       board.addMarker('X', '3A');
       var openCellsArray = board.getOpenCells();
-      var bestMove = game.ai.getBestMove(openCellsArray, computer)
+      var bestMove = computer.ai.getBestMove(openCellsArray, computer)
       expect(bestMove).toEqual('2B');
     });
 
@@ -50,7 +50,7 @@ describe('AI', function() {
       board.addMarker('O', '2B');
       board.addMarker('X', '3A');
       var openCellsArray = board.getOpenCells();
-      var bestMove = game.ai.getBestMove(openCellsArray, computer)
+      var bestMove = computer.ai.getBestMove(openCellsArray, computer)
       expect(bestMove).toEqual('2A');
     });
 
@@ -58,7 +58,7 @@ describe('AI', function() {
       board.addMarker('X', '1C');
       board.addMarker('O', '2A');
       var openCellsArray = board.getOpenCells();
-      var bestMove = game.ai.getBestMove(openCellsArray, computer)
+      var bestMove = computer.ai.getBestMove(openCellsArray, computer)
       expect(bestMove).toEqual('2B');
     });
 
@@ -67,7 +67,7 @@ describe('AI', function() {
       board.addMarker('O', '3B');
       board.addMarker('X', '3C');
       var openCellsArray = board.getOpenCells();
-      var bestMove = game.ai.getBestMove(openCellsArray, computer)
+      var bestMove = computer.ai.getBestMove(openCellsArray, computer)
       expect(bestMove).toEqual('2B');
     });
   });
@@ -80,14 +80,14 @@ describe('AI', function() {
       var currentBoard = board.filledSpaces;
       currentBoard['2B'] = 'O';
       var line = ['1A', '2A', '3A']
-      var result = game.ai.lineScore(currentBoard, computer, line)
+      var result = computer.ai.lineScore(currentBoard, computer, line)
       expect(result).toEqual(0);
     });
   });
 
   describe('#getHighScoreCell', function() {
     it('returns the cellID with the highest score', function() {
-      var result = game.ai.getHighScoreCell([[8, '2A'], [10, '2B'], [100, '3B'], [-100, '1C'], [-55, '2C']]);
+      var result = computer.ai.getHighScoreCell([[8, '2A'], [10, '2B'], [100, '3B'], [-100, '1C'], [-55, '2C']]);
       expect(result).toEqual('3B');
     });
   });

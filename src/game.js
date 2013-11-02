@@ -3,7 +3,6 @@
     this.playerOne = board.playerOne;
     this.playerTwo = board.playerTwo;
     this.board = board;
-    this.ai = new AI();
     this.newGame = $('#newGame');
     this.startGame();
   };
