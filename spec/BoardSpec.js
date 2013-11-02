@@ -66,8 +66,8 @@ describe('Board', function() {
   describe('#addMarker', function() {
     it('adds a marker to the board', function() {
       board.addMarker('X', '2C');
-      var cellValue = $('#2C').prop('outerHTML');
-      expect(cellValue).toEqual('<td id="2C" class="">X</td>');
+      var active = board.activeCell('2C');
+      expect(active).toBe(false);
     });
 
     it('adds the marker ID to the filledSpaces object', function() {
@@ -99,53 +99,6 @@ describe('Board', function() {
       board.addMarker('X', '1A');
       expect(Board.prototype.checkForTie).toHaveBeenCalled();
     });
-
-    it('returns tie message when appropriate', function() {
-      board.addMarker('O', '1A');
-      board.addMarker('O', '2A');
-      board.addMarker('X', '3A');
-      board.addMarker('X', '1B');
-      board.addMarker('X', '2B');
-      board.addMarker('O', '3B');
-      board.addMarker('O', '1C');
-      board.addMarker('O', '2C');
-      board.addMarker('X', '3C');
-      var message = $('#gameMessage').html();
-      expect(message).toEqual("Game over! It's a tie!");
-    });
-  });
-
-  describe('#winnerCheck', function() {
-    it('identifies a winning row', function() {
-      board.addMarker('X', '1A');
-      board.addMarker('O', '2B');
-      board.addMarker('X', '3A');
-      board.addMarker('O', '1B');
-      board.addMarker('X', '2A');
-      var message = $('#gameMessage').html();
-      expect(message).toEqual('Game over! X wins!');
-    });
-
-    it('identifies a winning column', function() {
-      board.addMarker('X', '1A');
-      board.addMarker('O', '2B');
-      board.addMarker('X', '1B');
-      board.addMarker('O', '2C');
-      board.addMarker('X', '1C');
-      var message = $('#gameMessage').html();
-      expect(message).toEqual('Game over! X wins!');
-    });
-
-    it('identifies a winning diagonal line', function() {
-      board.addMarker('O', '1A');
-      board.addMarker('X', '3B');
-      board.addMarker('O', '2B');
-      board.addMarker('X', '2C');
-      board.addMarker('O', '3C');
-      var message = $('#gameMessage').html();
-      expect(message).toEqual('Game over! O wins!');
-    });
-
   });
 
   describe('#getOpenCells', function() {

@@ -20,6 +20,11 @@ describe('Game', function() {
     game = new Game(board);
   });
 
+  afterEach(function(){
+    $('h1#gameMessage').remove();
+    $('.tableBoard').remove();
+  });
+
   describe('create new game',function() {
     it('assigns new player to playerOne', function() {
       expect(game.playerOne).toEqual(jasmine.any(Object));
@@ -63,6 +68,64 @@ describe('Game', function() {
       spyOn(Game.prototype, 'setUpPlayerByType');
       game = new Game(board);
       expect(Game.prototype.setUpPlayerByType).toHaveBeenCalled();
+    });
+
+    it('calls #setOpponents', function() {
+      spyOn(Game.prototype, 'setOpponents');
+      game = new Game(board);
+      expect(Game.prototype.setOpponents).toHaveBeenCalled();
+    });
+
+    it('calls #firstMoveMessage', function() {
+      spyOn(Game.prototype, 'firstMoveMessage');
+      game = new Game(board);
+      expect(Game.prototype.firstMoveMessage).toHaveBeenCalled();
+    });
+  });
+
+  describe('returns appropriate game messages',function() {
+    it('calls #showTieMessage', function() {
+      spyOn(Game.prototype, 'showTieMessage');
+      board.addMarker('O', '1A');
+      board.addMarker('O', '2A');
+      board.addMarker('X', '3A');
+      board.addMarker('X', '1B');
+      board.addMarker('X', '2B');
+      board.addMarker('O', '3B');
+      board.addMarker('O', '1C');
+      board.addMarker('O', '2C');
+      board.addMarker('X', '3C');
+      expect(Game.prototype.showTieMessage).toHaveBeenCalled();
+    });
+
+    it('identifies a winning row', function() {
+      spyOn(Game.prototype, 'showWinMessage');
+      board.addMarker('X', '1A');
+      board.addMarker('O', '2B');
+      board.addMarker('X', '3A');
+      board.addMarker('O', '1B');
+      board.addMarker('X', '2A');
+      expect(Game.prototype.showWinMessage).toHaveBeenCalled();
+    });
+
+    it('identifies a winning column', function() {
+      spyOn(Game.prototype, 'showWinMessage');
+      board.addMarker('X', '1A');
+      board.addMarker('O', '2B');
+      board.addMarker('X', '1B');
+      board.addMarker('O', '2C');
+      board.addMarker('X', '1C');
+      expect(Game.prototype.showWinMessage).toHaveBeenCalled();
+    });
+
+    it('identifies a winning diagonal line', function() {
+      spyOn(Game.prototype, 'showWinMessage');
+      board.addMarker('O', '1A');
+      board.addMarker('X', '3B');
+      board.addMarker('O', '2B');
+      board.addMarker('X', '2C');
+      board.addMarker('O', '3C');
+      expect(Game.prototype.showWinMessage).toHaveBeenCalled();
     });
   });
 
