@@ -66,8 +66,8 @@ describe('Board', function() {
   describe('#addMarker', function() {
     it('adds a marker to the board', function() {
       board.addMarker('X', '2C');
-      var cellValue = $('#2C').prop('outerHTML');
-      expect(cellValue).toEqual('<td id="2C" class="">X</td>');
+      var active = board.activeCell('2C');
+      expect(active).toBe(false);
     });
 
     it('adds the marker ID to the filledSpaces object', function() {
@@ -75,54 +75,6 @@ describe('Board', function() {
       var filledSpacesArray = board.filledSpaces;
       expect(filledSpacesArray).toEqual({ '1A': null, '2A': null, '3A': null,
         '1B': null, '2B': null, '3B': null, '1C': null, '2C': 'X', '3C': null });
-    });
-  });
-
-  describe('#playerMove', function() {
-    it('calls #addMarker', function() {
-      spyOn(board, "playerMove");
-      game = new Game(board);
-      computer.turn = 0;
-      player.turn = 1;
-      $('#1A').trigger('click');
-      expect(board.playerMove).toHaveBeenCalledWith(player);
-    });
-  });
-
-  describe('#computerMove', function() {
-    it('calls #addMarker', function() {
-      spyOn(board, "computerMove");
-      game = new Game(board);
-      computer.turn = 1;
-      player.turn = 0;
-      board.computerMove(computer);
-      expect(board.computerMove).toHaveBeenCalledWith(computer);
-    });
-  });
-
-  describe('#opponent', function() {
-    it('returns opponent player X', function() {
-      var oppPlayer = board.opponent(computer);
-      expect(oppPlayer.marker).toEqual('X');
-    });
-
-    it('returns opponent player Y', function() {
-      var oppPlayer = board.opponent(player);
-      expect(oppPlayer.marker).toEqual('O');
-    });
-  });
-
-  describe('#opponentMove', function() {
-    it('calls #playerMove', function() {
-      spyOn(Board.prototype, 'playerMove');
-      board.opponentMove(player);
-      expect(Board.prototype.playerMove).toHaveBeenCalled();
-    });
-
-    it('calls #computerMove', function() {
-      spyOn(Board.prototype, 'computerMove');
-      board.opponentMove(computer);
-      expect(Board.prototype.computerMove).toHaveBeenCalled();
     });
   });
 
@@ -147,53 +99,6 @@ describe('Board', function() {
       board.addMarker('X', '1A');
       expect(Board.prototype.checkForTie).toHaveBeenCalled();
     });
-
-    it('returns tie message when appropriate', function() {
-      board.addMarker('O', '1A');
-      board.addMarker('O', '2A');
-      board.addMarker('X', '3A');
-      board.addMarker('X', '1B');
-      board.addMarker('X', '2B');
-      board.addMarker('O', '3B');
-      board.addMarker('O', '1C');
-      board.addMarker('O', '2C');
-      board.addMarker('X', '3C');
-      var message = $('#gameMessage').html();
-      expect(message).toEqual("Game over! It's a tie!");
-    });
-  });
-
-  describe('#winnerCheck', function() {
-    it('identifies a winning row', function() {
-      board.addMarker('X', '1A');
-      board.addMarker('O', '2B');
-      board.addMarker('X', '3A');
-      board.addMarker('O', '1B');
-      board.addMarker('X', '2A');
-      var message = $('#gameMessage').html();
-      expect(message).toEqual('Game over! X wins!');
-    });
-
-    it('identifies a winning column', function() {
-      board.addMarker('X', '1A');
-      board.addMarker('O', '2B');
-      board.addMarker('X', '1B');
-      board.addMarker('O', '2C');
-      board.addMarker('X', '1C');
-      var message = $('#gameMessage').html();
-      expect(message).toEqual('Game over! X wins!');
-    });
-
-    it('identifies a winning diagonal line', function() {
-      board.addMarker('O', '1A');
-      board.addMarker('X', '3B');
-      board.addMarker('O', '2B');
-      board.addMarker('X', '2C');
-      board.addMarker('O', '3C');
-      var message = $('#gameMessage').html();
-      expect(message).toEqual('Game over! O wins!');
-    });
-
   });
 
   describe('#getOpenCells', function() {
@@ -203,66 +108,6 @@ describe('Board', function() {
       board.addMarker('X', '3A');
       var result = board.getOpenCells();
       expect(result).toEqual(['1B', '2B', '3B', '1C', '2C', '3C']);
-    });
-  });
-
-  describe('#calcScore', function() {
-    it('returns cellID score array', function() {
-      board.addMarker('X', '1A');
-      board.addMarker('O', '2A');
-      board.addMarker('X', '3A');
-      var result = board.calcScore('2B', computer)
-      expect(result).toEqual(9);
-    });
-  });
-
-  describe('#getBestMove', function() {
-    it('returns the cellID with the highest score', function() {
-      board.addMarker('X', '1A');
-      board.addMarker('O', '1B');
-      board.addMarker('X', '3A');
-      var openCellsArray = board.getOpenCells();
-      var bestMove = board.getBestMove(openCellsArray, computer)
-      expect(bestMove).toEqual('2B');
-    });
-
-    it('returns the cellID with the highest score', function() {
-      board.addMarker('X', '1A');
-      board.addMarker('O', '2B');
-      board.addMarker('X', '3A');
-      var openCellsArray = board.getOpenCells();
-      var bestMove = board.getBestMove(openCellsArray, computer)
-      expect(bestMove).toEqual('2A');
-    });
-
-    it('returns the cellID with the highest score', function() {
-      board.addMarker('X', '1C');
-      board.addMarker('O', '2A');
-      var openCellsArray = board.getOpenCells();
-      var bestMove = board.getBestMove(openCellsArray, computer)
-      expect(bestMove).toEqual('2B');
-    });
-
-    it('returns the cellID of the best move', function() {
-      board.addMarker('X', '1A');
-      board.addMarker('O', '3B');
-      board.addMarker('X', '3C');
-      var openCellsArray = board.getOpenCells();
-      var bestMove = board.getBestMove(openCellsArray, computer)
-      expect(bestMove).toEqual('2B');
-    });
-  });
-
-  describe('#lineScore', function() {
-    it('returns correct score of row one', function() {
-      board.addMarker('X', '1A');
-      board.addMarker('O', '1B');
-      board.addMarker('X', '3A');
-      var currentBoard = board.filledSpaces;
-      currentBoard['2B'] = 'O';
-      var line = ['1A', '2A', '3A']
-      var result = board.lineScore(currentBoard, computer, line)
-      expect(result).toEqual(0);
     });
   });
 
@@ -276,13 +121,6 @@ describe('Board', function() {
     });
   });
 
-  describe('#getHighScoreCell', function() {
-    it('returns the cellID with the highest score', function() {
-      var result = board.getHighScoreCell([[8, '2A'], [10, '2B'], [100, '3B'], [-100, '1C'], [-55, '2C']]);
-      expect(result).toEqual('3B');
-    });
-  });
-
   describe('#equalityCheck', function() {
     it('returns true if arrays are the same', function() {
       var result = board.equalityCheck(['X', 'X', null], ['X', 'X', null]);
@@ -291,6 +129,19 @@ describe('Board', function() {
 
     it('returns false if arrays are not the same', function() {
       var result = board.equalityCheck(['X', 'X', null], ['X', null, null]);
+      expect(result).toBe(false);
+    });
+  });
+
+  describe('#activeCell', function() {
+    it('returns true if the cell is active', function() {
+      var result = board.activeCell('1A');
+      expect(result).toBe(true);
+    });
+
+    it('returns false if the cell is inactive', function() {
+      board.addMarker('X', '1A');
+      var result = board.activeCell('1A');
       expect(result).toBe(false);
     });
   });
