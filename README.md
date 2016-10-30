@@ -43,7 +43,7 @@ This web application uses following tools and technologies:
 * [HTML5 Bloilerplate](http://html5boilerplate.com/)
 * [JQuery](http://jquery.com/)
 * [JavaScript Underscore](http://underscorejs.org/)
-* [Jasmine](http://pivotal.github.io/jasmine/)
+* [Jasmine](http://jasmine.github.io/)
 * [Jasmine fixture](https://github.com/searls/jasmine-fixture)
 
 ## Structure
